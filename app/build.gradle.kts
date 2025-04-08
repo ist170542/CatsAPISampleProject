@@ -1,3 +1,7 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
+val key: String = gradleLocalProperties(rootDir, providers).getProperty("catApiKey")
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.example.catsapisampleproject"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.catsapisampleproject"
@@ -16,6 +20,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -25,7 +30,16 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "CAT_API_KEY", key)
         }
+
+        //read local value from local.properties
+        //prevent it from being sent to the repository (local.properties -> gitignore)
+        //access 'val key = BuildConfig.key'
+        getByName("debug") {
+            buildConfigField("String", "CAT_API_KEY", key)
+        }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -36,6 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
