@@ -1,5 +1,6 @@
 package com.example.catsapisampleproject.di
 
+import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
 import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSource
 import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepositoryImpl
@@ -17,8 +18,10 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Provides
     @Singleton
-    //todo dont forget to add local data sources
-    fun provideCatBreedsRepository(remoteDataSource: RemoteDataSource): CatBreedsRepository {
-        return CatBreedsRepositoryImpl(remoteDataSource)
+    fun provideCatBreedsRepository(
+        remoteDataSource: RemoteDataSource,
+        localDataSource: LocalDataSource
+    ): CatBreedsRepository {
+        return CatBreedsRepositoryImpl(remoteDataSource, localDataSource)
     }
 }
