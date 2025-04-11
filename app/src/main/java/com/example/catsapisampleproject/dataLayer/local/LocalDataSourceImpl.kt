@@ -1,11 +1,13 @@
 package com.example.catsapisampleproject.dataLayer.local
 
+import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
 import com.example.catsapisampleproject.domain.model.CatBreed
 import com.example.catsapisampleproject.domain.model.CatBreedImage
 
 class LocalDataSourceImpl(
     private val catBreedsDao: CatBreedsDao,
-    private val catBreedImagesDao: CatBreedImagesDao
+    private val catBreedImagesDao: CatBreedImagesDao,
+    private val favouritesDao: FavouriteBreedsDao
 ) : LocalDataSource {
 
     override suspend fun getCatBreeds(): List<CatBreed> {
@@ -28,8 +30,12 @@ class LocalDataSourceImpl(
         catBreedsDao.insertCatBreed(catBreed)
     }
 
-    override suspend fun getCatBreedImagesByBreedId(breedId: String): List<CatBreedImage>? {
-        return catBreedImagesDao.getCatBreedImagesByBreedId(breedId)
+    override suspend fun getCatBreedImages(): List<CatBreedImage>? {
+        return catBreedImagesDao.getAllCatBreedImages()
+    }
+
+    override suspend fun getCatBreedImageByBreedId(breedId: String): CatBreedImage? {
+        return catBreedImagesDao.getCatBreedImageByBreedId(breedId)
     }
 
     override suspend fun getCatBreedImageById(imageId: String): CatBreedImage? {
@@ -46,6 +52,30 @@ class LocalDataSourceImpl(
 
     override suspend fun insertCatBreedImage(catBreedImage: CatBreedImage) {
         catBreedImagesDao.insertCatBreedImage(catBreedImage)
+    }
+
+    override suspend fun getFavouriteCatBreeds(): List<FavouriteEntity> {
+        return favouritesDao.getAllFavourites()
+    }
+
+    override suspend fun insertFavourite(favouriteEntity: FavouriteEntity) {
+        favouritesDao.insertFavourite(favouriteEntity)
+    }
+
+    override suspend fun insertFavourites(favouriteEntities: List<FavouriteEntity>) {
+        favouritesDao.insertFavourites(favouriteEntities)
+    }
+
+    override suspend fun deleteFavourite(imageId: String) {
+        favouritesDao.deleteFavourite(FavouriteEntity(imageId, ""))
+    }
+
+    override suspend fun getFavouriteByImageId(imageId: String): FavouriteEntity? {
+        return favouritesDao.getFavouriteByImageId(imageId)
+    }
+
+    override suspend fun deleteAllFavourites() {
+        favouritesDao.deleteAllFavourites()
     }
 
 }

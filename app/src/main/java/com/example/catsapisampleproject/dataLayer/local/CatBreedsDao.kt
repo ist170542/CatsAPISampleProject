@@ -25,7 +25,4 @@ interface CatBreedsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCatBreeds(catBreeds: List<CatBreed>)
 
-    @Query("SELECT * FROM cat_breeds WHERE isFavourite = 1")
-    suspend fun getFavouriteCatBreeds(): List<CatBreed>
-
 }

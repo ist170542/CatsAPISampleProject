@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.catsapisampleproject.dataLayer.local.AppDatabase
 import com.example.catsapisampleproject.dataLayer.local.CatBreedImagesDao
 import com.example.catsapisampleproject.dataLayer.local.CatBreedsDao
+import com.example.catsapisampleproject.dataLayer.local.FavouriteBreedsDao
 import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
 import com.example.catsapisampleproject.dataLayer.local.LocalDataSourceImpl
 import com.example.catsapisampleproject.util.AppConstants
@@ -26,7 +27,7 @@ object DatabaseModule {
             appContext,
             AppDatabase::class.java,
             AppConstants.APP_DATABASE_NAME
-        ).build()
+        ).fallbackToDestructiveMigration(dropAllTables = true).build()
 
     @Singleton
     @Provides
@@ -34,13 +35,25 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideCatBreedImageDao(database: AppDatabase) : CatBreedImagesDao = database.catBreedImagesDao()
+    fun provideCatBreedImageDao(database: AppDatabase) : CatBreedImagesDao
+        = database.catBreedImagesDao()
+
+    @Singleton
+    @Provides
+    fun provideFavouriteCatBreedsDao(database: AppDatabase) : FavouriteBreedsDao
+        = database.favouriteBreedsDao()
 
     @Singleton
     @Provides
     fun provideLocalDataSource(
         catBreedsDao: CatBreedsDao,
-        catBreedImagesDao: CatBreedImagesDao)
-    : LocalDataSource = LocalDataSourceImpl(catBreedsDao, catBreedImagesDao)
+        catBreedImagesDao: CatBreedImagesDao,
+        favouriteBreedsDao: FavouriteBreedsDao
+    )
+    : LocalDataSource = LocalDataSourceImpl(
+        catBreedsDao = catBreedsDao,
+        catBreedImagesDao = catBreedImagesDao,
+        favouritesDao = favouriteBreedsDao
+    )
 
 }
