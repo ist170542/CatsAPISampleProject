@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 sealed class SplashScreenUIState {
     object Loading : SplashScreenUIState()
-    data class NavigateToMain(val online : Boolean): SplashScreenUIState()
+    data class NavigateToMain(val message: String = ""): SplashScreenUIState()
     data class Error(val message: String) : SplashScreenUIState()
 }
 
@@ -37,11 +37,11 @@ class SplashScreenViewModel @Inject constructor(
                 }
 
                 is CatBreedsRepositoryImpl.InitializationResult.Success -> {
-                    _uiState.value = SplashScreenUIState.NavigateToMain(online = true)
+                    _uiState.value = SplashScreenUIState.NavigateToMain()
                 }
 
                 is CatBreedsRepositoryImpl.InitializationResult.OfflineDataAvailable -> {
-                    _uiState.value = SplashScreenUIState.NavigateToMain(online = false)
+                    _uiState.value = SplashScreenUIState.NavigateToMain(message = "Using offline data")
                 }
 
                 is CatBreedsRepositoryImpl.InitializationResult.Error -> {

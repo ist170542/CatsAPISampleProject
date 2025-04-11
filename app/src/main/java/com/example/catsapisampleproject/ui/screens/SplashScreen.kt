@@ -1,5 +1,6 @@
 package com.example.catsapisampleproject.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,6 +61,11 @@ fun SplashScreenContent(
         if (uiState is SplashScreenUIState.Loading) FullScreenLoadingOverlay()
 
         if (uiState is SplashScreenUIState.NavigateToMain) {
+            uiState.message.let { msg ->
+                if (msg.isNotEmpty()) {
+                    Toast.makeText(LocalContext.current, msg, Toast.LENGTH_LONG).show()
+                }
+            }
             navigateToMain()
         }
 
@@ -69,6 +76,6 @@ fun SplashScreenContent(
 @Composable
 fun SplashScreenContentPreview() {
     SplashScreenContent(
-        uiState = SplashScreenUIState.NavigateToMain(online = true)
+        uiState = SplashScreenUIState.NavigateToMain()
     )
 }
