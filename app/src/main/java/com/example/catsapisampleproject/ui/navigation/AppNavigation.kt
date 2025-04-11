@@ -27,6 +27,7 @@ data class BottomNavigationItem(
 
 // Sealed class for navigation items (for type safety)
 sealed class NavigationItem(val route: String) {
+    object Splash : NavigationItem("splash")
     object Main : NavigationItem("main")
     object Details : NavigationItem("details/{breedId}") {
         fun createRoute(breedId: String) = "details/$breedId"

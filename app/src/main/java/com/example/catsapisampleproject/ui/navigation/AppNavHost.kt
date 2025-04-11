@@ -11,22 +11,31 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.catsapisampleproject.ui.screens.CatDetailsScreen
 import com.example.catsapisampleproject.ui.screens.MainScreen
+import com.example.catsapisampleproject.ui.screens.SplashScreen
 
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = NavigationItem.Main.route
+    startDestination: String = NavigationItem.Splash.route
 ) {
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = startDestination
     ) {
+        // Splash screen
+        composable(
+            route = NavigationItem.Splash.route
+        ) {
+            SplashScreen { navController.navigate(NavigationItem.Main.route) }
+        }
+
         // Main navigation graph (with bottom navigation)
         navigation(
             startDestination = BottomNavScreen.LIST.name,
             route = NavigationItem.Main.route
+
         ) {
             // List screen
             composable(BottomNavScreen.LIST.name) {
