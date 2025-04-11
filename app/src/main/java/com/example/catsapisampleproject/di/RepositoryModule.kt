@@ -1,6 +1,7 @@
 package com.example.catsapisampleproject.di
 
 import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
+import com.example.catsapisampleproject.dataLayer.network.NetworkManager
 import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSource
 import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepositoryImpl
@@ -20,8 +21,9 @@ object RepositoryModule {
     @Singleton
     fun provideCatBreedsRepository(
         remoteDataSource: RemoteDataSource,
-        localDataSource: LocalDataSource
+        localDataSource: LocalDataSource,
+        networkManager: NetworkManager
     ): CatBreedsRepository {
-        return CatBreedsRepositoryImpl(remoteDataSource, localDataSource)
+        return CatBreedsRepositoryImpl(remoteDataSource, localDataSource, networkManager)
     }
 }

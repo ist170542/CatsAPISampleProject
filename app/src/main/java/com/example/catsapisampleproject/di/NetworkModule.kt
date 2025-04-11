@@ -1,9 +1,12 @@
 package com.example.catsapisampleproject.di
 
+import com.example.catsapisampleproject.dataLayer.network.ConnectivityManagerNetwork
+import com.example.catsapisampleproject.dataLayer.network.NetworkManager
 import com.example.catsapisampleproject.dataLayer.remote.CatAPIService
 import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSource
 import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSourceImpl
 import com.example.catsapisampleproject.util.AppConstants
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,5 +41,13 @@ object NetworkModule {
         return RemoteDataSourceImpl(api)
     }
 
+    @Module
+    @InstallIn(SingletonComponent::class)
+    abstract class NetworkModule {
+        @Binds
+        abstract fun bindNetworkManager(
+            connectivityManagerNetwork: ConnectivityManagerNetwork
+        ): NetworkManager
+    }
 
 }
