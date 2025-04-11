@@ -13,8 +13,8 @@ interface CatBreedImagesDao {
     @Query("SELECT * FROM cat_breeds_images WHERE image_id = :imageId")
     suspend fun getCatBreedImageById(imageId: String): CatBreedImage?
 
-    @Query("SELECT * FROM cat_breeds_images WHERE breed_id = :breedId")
-    suspend fun getCatBreedImagesByBreedId(breedId: String): List<CatBreedImage>?
+    @Query("SELECT * FROM cat_breeds_images WHERE breed_id = :breedId LIMIT 1")
+    suspend fun getCatBreedImageByBreedId(breedId: String): CatBreedImage?
 
     @Query("SELECT * FROM cat_breeds_images")
     suspend fun getAllCatBreedImages(): List<CatBreedImage>?
