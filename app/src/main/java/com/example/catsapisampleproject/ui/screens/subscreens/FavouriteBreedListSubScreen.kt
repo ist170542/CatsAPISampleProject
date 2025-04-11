@@ -45,25 +45,19 @@ fun FavouriteBreedListSubScreen(
     ) {
 
         Box(modifier = Modifier.fillMaxSize()){
-            Scaffold(
-                modifier = Modifier
-                    .fillMaxSize(),
-                topBar = {
-                    TopAppBar(title = { Text("Favourite Breeds List") })
-                }
-            ) { padding ->
 
 
                 Column(
                     modifier = Modifier
-                        .padding(padding)
                         .fillMaxSize()
                 ) {
+
+                    TopAppBar(title = { Text("Favourite Breeds List") })
 
                     if (uiState.favouriteList.isNotEmpty()) {
                         LazyVerticalGrid(
                             columns = GridCells.Adaptive(minSize = 128.dp),
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier.fillMaxSize().weight(1f),
                         ) {
                             items(uiState.favouriteList) { breed ->
                                 CatBreedGridItem(
@@ -93,6 +87,6 @@ fun FavouriteBreedListSubScreen(
                         .fillMaxSize()
                 )
             }
-        }
+
 
     }
