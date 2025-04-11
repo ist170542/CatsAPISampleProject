@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.catsapisampleproject.ui.components.viewmodels.BreedFavouriteListViewModel
 import com.example.catsapisampleproject.ui.components.viewmodels.FavouriteListUIState
@@ -46,13 +47,12 @@ fun FavouriteBreedListSubScreen(
 
         Box(modifier = Modifier.fillMaxSize()){
 
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
 
-                    TopAppBar(title = { Text("Favourite Breeds List") })
+                    TopAppBar(title = { Text("Favourite breeds") })
 
                     if (uiState.favouriteList.isNotEmpty()) {
                         LazyVerticalGrid(
@@ -87,6 +87,19 @@ fun FavouriteBreedListSubScreen(
                         .fillMaxSize()
                 )
             }
-
-
     }
+
+@Preview
+@Composable
+fun FavouriteBreedListSubScreenContentPreview() {
+    FavouriteBreedListSubScreenContent(
+        uiState = FavouriteListUIState(
+            favouriteList = listOf(
+            ),
+            averageMinLifeSpan = 12.0,
+            isLoading = false
+        ),
+        onClickedFavouriteButton = { _, _ -> },
+        onClickedCard = {}
+    )
+}

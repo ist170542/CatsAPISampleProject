@@ -227,7 +227,50 @@ fun CatBreedGridItem(
 @Composable
 fun BreedListSubScreenContentPreview() {
     BreedListSubScreenContent(
-        uiState = BreedListUIState(),
+        uiState = BreedListUIState(
+            searchText = "Testing search",
+            isLoading = false,
+            fullBreedList = List(5) {
+                BreedWithImage(
+                    breed = CatBreed(
+                        id = "id",
+                        name = "name",
+                        description = "desc",
+                        temperament = "temperament",
+                        origin = "origin",
+                        referenceImageId = "refImgId",
+                        minLifeSpan = 1,
+                        maxLifeSpan = 2
+                    ),
+                    image = CatBreedImage(
+                        image_id = "",
+                        url = "https://cdn2.thecatapi.com/images/0SxW2SQ_S.jpg",
+                        breed_id = "id",
+                    ),
+                    isFavourite = true
+                )
+            },
+            filteredBreedList = List(5) {
+                BreedWithImage(
+                    breed = CatBreed(
+                        id = "id",
+                        name = "name",
+                        description = "desc",
+                        temperament = "temperament",
+                        origin = "origin",
+                        referenceImageId = "refImgId",
+                        minLifeSpan = 1,
+                        maxLifeSpan = 2
+                    ),
+                    image = CatBreedImage(
+                        image_id = "",
+                        url = "https://cdn2.thecatapi.com/images/0SxW2SQ_S.jpg",
+                        breed_id = "id",
+                    ),
+                    isFavourite = true
+                )
+            }
+        ),
         onSearchTextChange = {},
         onClickedFavouriteButton = { _, _ -> },
         onClickedCard = {}
