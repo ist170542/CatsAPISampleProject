@@ -20,5 +20,8 @@ data class BreedDTO(
     val description: String,
 
     @SerializedName("reference_image_id")
-    val referenceImageId: String?
+    val referenceImageId: String?,
+
+    @SerializedName("life_span")
+    val lifeSpan: String
 )
