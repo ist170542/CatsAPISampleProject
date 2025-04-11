@@ -10,20 +10,21 @@ import java.io.IOException
 import javax.inject.Inject
 
 /**
- * UseCase to get the list of breeds
+ * UseCase to get a specific breed
  */
-class GetCatBreedsUseCase @Inject constructor(
+class GetCatBreedUseCase @Inject constructor(
     private val catRepository: CatBreedsRepository
 ) {
-    operator fun invoke(): Flow<Resource<List<BreedWithImage>>> = flow {
+    operator fun invoke(breedId: String): Flow<Resource<BreedWithImage>> = flow {
         try {
             emit(Resource.Loading())
-            val catBreeds = catRepository.getCatBreeds()
+            val catBreeds = catRepository.getCatBreed(breedId)
 
             catBreeds.collect {
-                result -> emit(result)
+                    result -> emit(result)
             }
         } catch (e: HttpException) {
+            //todo handling
             emit(Resource.Error(e.localizedMessage?: "Unexpected Error"))
         } catch (e: IOException){
             emit(Resource.Error(e.localizedMessage?: "Couldn't reach server. Check connection"))
