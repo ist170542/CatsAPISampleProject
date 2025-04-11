@@ -2,7 +2,7 @@ package com.example.catsapisampleproject.dataLayer.remote
 
 import com.example.catsapisampleproject.dataLayer.dto.responses.BreedDTO
 import com.example.catsapisampleproject.dataLayer.dto.responses.FavouriteDTO
-import com.example.catsapisampleproject.dataLayer.dto.responses.FavouriteRequestDTO
+import com.example.catsapisampleproject.dataLayer.dto.requests.FavouriteRequestDTO
 import com.example.catsapisampleproject.dataLayer.dto.responses.ImageDTO
 import retrofit2.HttpException
 import javax.inject.Inject

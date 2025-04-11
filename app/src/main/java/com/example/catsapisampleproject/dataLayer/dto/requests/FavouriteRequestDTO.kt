@@ -1,4 +1,4 @@
-package com.example.catsapisampleproject.dataLayer.dto.responses
+package com.example.catsapisampleproject.dataLayer.dto.requests
 
 import com.google.gson.annotations.SerializedName
 
