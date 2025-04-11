@@ -11,5 +11,6 @@ data class CatBreed (
     val temperament: String,
     val origin: String,
     val referenceImageId: String?,
-    val isFavourite: Boolean
+    val minLifeSpan: Int?,
+    val maxLifeSpan: Int?
 )
