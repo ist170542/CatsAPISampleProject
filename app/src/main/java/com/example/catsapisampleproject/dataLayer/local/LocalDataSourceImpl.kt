@@ -3,6 +3,7 @@ package com.example.catsapisampleproject.dataLayer.local
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
 import com.example.catsapisampleproject.domain.model.CatBreed
 import com.example.catsapisampleproject.domain.model.CatBreedImage
+import kotlinx.coroutines.flow.Flow
 
 class LocalDataSourceImpl(
     private val catBreedsDao: CatBreedsDao,
@@ -30,6 +31,10 @@ class LocalDataSourceImpl(
         catBreedsDao.insertCatBreed(catBreed)
     }
 
+    override fun observeCatBreeds(): Flow<List<CatBreed>> {
+        return catBreedsDao.observeAllCatBreeds()
+    }
+
     override suspend fun getCatBreedImages(): List<CatBreedImage>? {
         return catBreedImagesDao.getAllCatBreedImages()
     }
@@ -54,6 +59,10 @@ class LocalDataSourceImpl(
         catBreedImagesDao.insertCatBreedImage(catBreedImage)
     }
 
+    override fun observeCatBreedImages(): Flow<List<CatBreedImage>> {
+        return catBreedImagesDao.observeAllCatBreedImages()
+    }
+
     override suspend fun getFavouriteCatBreeds(): List<FavouriteEntity> {
         return favouritesDao.getAllFavourites()
     }
@@ -76,6 +85,10 @@ class LocalDataSourceImpl(
 
     override suspend fun deleteAllFavourites() {
         favouritesDao.deleteAllFavourites()
+    }
+
+    override fun observeFavouriteCatBreeds(): Flow<List<FavouriteEntity>> {
+        return favouritesDao.observeAllFavourites()
     }
 
 }

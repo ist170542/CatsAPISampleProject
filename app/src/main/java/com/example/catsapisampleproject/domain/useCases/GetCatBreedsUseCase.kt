@@ -18,7 +18,7 @@ class GetCatBreedsUseCase @Inject constructor(
     operator fun invoke(): Flow<Resource<List<BreedWithImage>>> = flow {
         try {
             emit(Resource.Loading())
-            val catBreeds = catRepository.getCatBreeds()
+            val catBreeds = catRepository.observeCatBreeds()
 
             catBreeds.collect {
                 result -> emit(result)

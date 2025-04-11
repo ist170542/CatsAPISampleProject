@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavouriteBreedsDao {
@@ -27,5 +28,8 @@ interface FavouriteBreedsDao {
 
     @Query("DELETE FROM favourites")
     suspend fun deleteAllFavourites()
+
+    @Query("SELECT * FROM favourites")
+    fun observeAllFavourites(): Flow<List<FavouriteEntity>>
 
 }

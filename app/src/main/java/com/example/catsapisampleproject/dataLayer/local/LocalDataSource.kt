@@ -3,6 +3,7 @@ package com.example.catsapisampleproject.dataLayer.local
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
 import com.example.catsapisampleproject.domain.model.CatBreed
 import com.example.catsapisampleproject.domain.model.CatBreedImage
+import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
     //cat breeds
@@ -11,6 +12,7 @@ interface LocalDataSource {
     suspend fun updateCatBreed(catBreed: CatBreed)
     suspend fun insertCatBreeds(catBreeds: List<CatBreed>)
     suspend fun insertCatBreed(catBreed: CatBreed)
+    fun observeCatBreeds(): Flow<List<CatBreed>>
     //cat breed images
     suspend fun getCatBreedImages() : List<CatBreedImage>?
     suspend fun getCatBreedImageByBreedId(breedId: String): CatBreedImage?
@@ -18,6 +20,7 @@ interface LocalDataSource {
     suspend fun updateCatBreedImage(catBreedImage: CatBreedImage)
     suspend fun insertCatBreedImages(catBreedImages: List<CatBreedImage>)
     suspend fun insertCatBreedImage(catBreedImage: CatBreedImage)
+    fun observeCatBreedImages(): Flow<List<CatBreedImage>>
     //favourites
     suspend fun getFavouriteCatBreeds(): List<FavouriteEntity>
     suspend fun insertFavourite(favouriteEntity: FavouriteEntity)
@@ -25,5 +28,6 @@ interface LocalDataSource {
     suspend fun deleteFavourite(imageId: String)
     suspend fun getFavouriteByImageId(imageId: String): FavouriteEntity?
     suspend fun deleteAllFavourites()
+    fun observeFavouriteCatBreeds(): Flow<List<FavouriteEntity>>
 
 }

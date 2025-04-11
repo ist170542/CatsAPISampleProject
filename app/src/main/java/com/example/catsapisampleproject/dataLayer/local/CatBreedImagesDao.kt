@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.catsapisampleproject.domain.model.CatBreedImage
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CatBreedImagesDao {
@@ -27,5 +28,8 @@ interface CatBreedImagesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCatBreedImages(catBreedImages: List<CatBreedImage>)
+
+    @Query("SELECT * FROM cat_breeds_images")
+    fun observeAllCatBreedImages(): Flow<List<CatBreedImage>>
 
 }
