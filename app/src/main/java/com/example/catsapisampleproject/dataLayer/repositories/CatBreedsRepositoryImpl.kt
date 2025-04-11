@@ -4,6 +4,8 @@ import android.util.Log
 import com.example.catsapisampleproject.dataLayer.dto.responses.FavouriteDTO
 import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
+import com.example.catsapisampleproject.dataLayer.mappers.CatBreedMapper
+import com.example.catsapisampleproject.dataLayer.mappers.FavouriteEntityMapper
 import com.example.catsapisampleproject.dataLayer.network.NetworkManager
 import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSource
 import com.example.catsapisampleproject.domain.model.CatBreedImage
@@ -54,39 +56,14 @@ constructor(
                     breedDTOsDeferred.await() to favouritesDeferred.await()
                 }
 
-                // todo mapper to CatBreed
                 val breeds = breedDTOs.map { dto ->
-                    val parts = dto.lifeSpan.split(" - ")
-                    val minLifeSpan = if (parts.size == 2) {
-                        parts[0].trim().toIntOrNull()
-                    } else {
-                        null
-                    }
-                    val maxLifeSpan = if (parts.size == 2) {
-                        parts[1].trim().toIntOrNull()
-                    } else {
-                        null
-                    }
-
-                    CatBreed(
-                        id = dto.id,
-                        name = dto.name,
-                        description = dto.description,
-                        temperament = dto.temperament,
-                        origin = dto.origin,
-                        referenceImageId = dto.referenceImageId,
-                        minLifeSpan = minLifeSpan,
-                        maxLifeSpan = maxLifeSpan
-                    )
+                    CatBreedMapper().fromDto(dto)
                 }
 
                 localDataSource.insertCatBreeds(breeds)
 
                 val favouriteEntities = favouritesDTO.map { favDTO ->
-                    FavouriteEntity(
-                        imageId = favDTO.imageID,
-                        favouriteId = favDTO.favouriteID
-                    )
+                   FavouriteEntityMapper().fromDto(favDTO)
                 }
 
                 // Update the local favourites table with fresh data.
