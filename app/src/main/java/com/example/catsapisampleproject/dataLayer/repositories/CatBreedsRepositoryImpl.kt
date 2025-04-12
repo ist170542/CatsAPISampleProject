@@ -6,6 +6,7 @@ import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
 import com.example.catsapisampleproject.dataLayer.mappers.CatBreedMapper
 import com.example.catsapisampleproject.dataLayer.mappers.FavouriteEntityMapper
+import com.example.catsapisampleproject.dataLayer.mappers.createBreedWithImageList
 import com.example.catsapisampleproject.dataLayer.network.NetworkManager
 import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSource
 import com.example.catsapisampleproject.domain.model.CatBreedImage
@@ -59,7 +60,6 @@ constructor(
                 val breeds = breedDTOs.map { dto ->
                     CatBreedMapper().fromDto(dto)
                 }
-
                 localDataSource.insertCatBreeds(breeds)
 
                 val favouriteEntities = favouritesDTO.map { favDTO ->
@@ -170,19 +170,7 @@ constructor(
         }
     }
 
-    private fun createBreedWithImageList(breeds: List<CatBreed>,
-                                         images: List<CatBreedImage>?,
-                                         favourites: List<FavouriteEntity>): List<BreedWithImage> {
 
-        val favouriteSet = favourites.map { it.imageId }.toSet()
-
-
-        return breeds.map { breed ->
-            val isFavourite = breed.referenceImageId?.let { favouriteSet.contains(it) } ?: false
-            val image = images?.find { it.breed_id == breed.id }
-            BreedWithImage(breed, image, isFavourite)
-        }
-    }
 
     override fun setCatBreedAsFavourite(imageReferenceId: String): Flow<Resource<FavouriteEntity>> = flow {
         try {
