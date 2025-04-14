@@ -29,6 +29,10 @@ class SplashScreenViewModel @Inject constructor(
         initializeApplicationData()
     }
 
+    fun onRetryClicked() {
+        initializeApplicationData()
+    }
+
     private fun initializeApplicationData() {
         initializeApplicationDataUseCase.invoke().onEach { result ->
             when (result) {

@@ -12,7 +12,7 @@ import com.example.catsapisampleproject.domain.model.CatBreed
     CatBreedImage::class,
     FavouriteEntity::class,
     CatBreedDetailsEntity::class]
-    , version = 20, exportSchema = false
+    , version = 21, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun catBreedsDao(): CatBreedsDao

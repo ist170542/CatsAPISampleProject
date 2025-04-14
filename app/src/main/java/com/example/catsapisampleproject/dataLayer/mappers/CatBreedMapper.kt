@@ -1,7 +1,6 @@
 package com.example.catsapisampleproject.dataLayer.mappers
 
 import com.example.catsapisampleproject.dataLayer.dto.responses.BreedDTO
-import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedDetailsEntity
 import com.example.catsapisampleproject.domain.model.CatBreed
 
 class CatBreedMapper {

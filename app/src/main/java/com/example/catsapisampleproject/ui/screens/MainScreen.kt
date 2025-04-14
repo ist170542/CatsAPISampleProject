@@ -49,6 +49,7 @@ fun MainScreenContent(
         startDestination = BottomNavScreen.LIST.name
     ) {
         composable(BottomNavScreen.LIST.name) {
+            // Get the parent nav back stack entry for ViewModel scoping
             //logic to mitigate the issues in between the
             // "ViewModelStore should be set before setGraph call",
             val parentEntry = remember(innerNavController.currentBackStackEntry) {

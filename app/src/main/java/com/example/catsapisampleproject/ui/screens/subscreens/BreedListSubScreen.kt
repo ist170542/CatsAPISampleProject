@@ -51,6 +51,8 @@ import com.example.catsapisampleproject.domain.model.CatBreedImage
 import com.example.catsapisampleproject.ui.components.viewmodels.BreedListUIState
 import com.example.catsapisampleproject.ui.components.viewmodels.BreedListViewModel
 import com.example.catsapisampleproject.ui.misc.FullScreenLoadingOverlay
+import com.example.catsapisampleproject.ui.screens.subscreens.common.CatBreedGridItem
+import com.example.catsapisampleproject.ui.screens.subscreens.common.CatBreedList
 
 @Composable
 fun BreedListSubScreen(
@@ -69,7 +71,6 @@ fun BreedListSubScreen(
     )
 
 }
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,7 +99,7 @@ fun BreedListSubScreenContent(
                             onSearch = { expanded = false },
                             expanded = expanded,
                             onExpandedChange = { expanded  = it },
-                            placeholder = { Text("Type location to search...") },
+                            placeholder = { Text("Type breed name to search...") },
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                             onQueryChange = onSearchTextChange
                         )
@@ -113,20 +114,12 @@ fun BreedListSubScreenContent(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if (uiState.fullBreedList.isNotEmpty()) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(minSize = 128.dp),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(uiState.filteredBreedList) { breed ->
-                            CatBreedGridItem(
-                                breedWithImage = breed,
-                                onClickedFavouriteButton = onClickedFavouriteButton,
-                                onClickedCard = onClickedCard
-                            )
-                        }
-                    }
-                }
+                CatBreedList(
+                    breedList = uiState.filteredBreedList,
+                    onClickedFavouriteButton = onClickedFavouriteButton,
+                    onClickedCard = onClickedCard
+                )
+
             }
 
             if (uiState.isLoading) {
@@ -136,90 +129,8 @@ fun BreedListSubScreenContent(
                 )
             }
         }
-
-
-
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun CatBreedGridItem(
-    breedWithImage: BreedWithImage,
-    modifier: Modifier = Modifier,
-    onClickedFavouriteButton: (String?, Boolean) -> Unit,
-    onClickedCard: (String) -> Unit
-) {
-    val context = LocalContext.current
-    Card(
-        modifier = modifier
-            .padding(8.dp)
-            .shadow(elevation = 4.dp, shape = RoundedCornerShape(8.dp))
-            .clickable {
-                onClickedCard(breedWithImage.breed.id)
-            }
-        , colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-
-            // Main column for image + text
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                GlideImage(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(120.dp)
-                        .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
-                    model = breedWithImage.image?.url,
-                    loading = placeholder(R.drawable.ic_generic_cat_drawable),
-                    failure = placeholder(R.drawable.ic_generic_cat_drawable),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = breedWithImage.breed.name
-                )
-
-                // Breed name below the image
-                Text(
-                    text = breedWithImage.breed.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp, vertical = 8.dp)
-                        .fillMaxWidth()
-                )
-            }
-
-            // Favorite icon in the top-right
-            IconButton(
-                onClick = {
-                    onClickedFavouriteButton(
-                        breedWithImage.breed.referenceImageId,
-                        breedWithImage.isFavourite
-                    ) },
-                modifier = Modifier
-                    .padding(4.dp)
-                    .size(36.dp)
-                    .align(Alignment.TopEnd)
-            ) {
-                Icon(
-                    imageVector = if (breedWithImage.isFavourite) {
-                        Icons.Filled.Favorite
-                    } else {
-                        Icons.Outlined.FavoriteBorder
-                    },
-                    contentDescription = if (breedWithImage.isFavourite) {
-                        "Unmark as favorite"
-                    } else {
-                        "Mark as favorite"
-                    },
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-    }
-}
 
 @Preview
 @Composable

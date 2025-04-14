@@ -27,9 +27,6 @@ fun FullScreenLoadingOverlay(modifier: Modifier = Modifier) {
             ),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(
-            modifier = Modifier.size(48.dp),
-            color = Color.White
-        )
+        CircularProgressIndicator()
     }
 }

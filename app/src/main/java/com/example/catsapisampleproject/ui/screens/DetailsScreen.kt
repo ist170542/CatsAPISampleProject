@@ -35,15 +35,25 @@ import com.example.catsapisampleproject.ui.misc.FullScreenLoadingOverlay
 
 @Composable
 fun CatDetailsScreen(
-    breedId: String?,
+    breedId: String,
     viewModel: CatViewDetailsViewModel = hiltViewModel()  // SavedStateHandle provides the breedId
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
     CatDetailsScreenContent(
         uiState,
-        onFavoriteClick = { viewModel.toggleFavourite() }
+        onFavoriteClick = { viewModel.toggleFavourite() },
+        snackbarHostState
     )
+
+    // Display any favorite operation errors via snackbar
+    LaunchedEffect(uiState.favouriteOperationError) {
+        if (uiState.favouriteOperationError.isNotEmpty()) {
+            snackbarHostState.showSnackbar(uiState.favouriteOperationError)
+        }
+    }
 
 }
 
@@ -52,89 +62,91 @@ fun CatDetailsScreen(
 fun CatDetailsScreenContent(
     uiState: CatDetailsUIState,
     onFavoriteClick: () -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
-    val context = LocalContext.current
-
-    // Show toast if there's a favorite operation error
-    LaunchedEffect(key1 = uiState.favouriteOperationError) {
-        if (uiState.favouriteOperationError.isNotEmpty()) {
-            Toast.makeText(context, uiState.favouriteOperationError, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (uiState.error.isNotEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = uiState.error)
-            }
-        } else {
+    Scaffold(
+        topBar = {
             uiState.breed?.let { breed ->
-                Scaffold(
-                    topBar = {
-                        TopAppBar(title = { Text(breed.breed.name) })
-                    }
-                ) { padding ->
-                    Column(
-                        modifier = Modifier
-                            .padding(padding)
-                            .fillMaxSize()
-                            .padding(16.dp),
-                    ) {
-                        GlideImage(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            model = breed.image?.url,
-                            loading = placeholder(R.drawable.ic_generic_cat_drawable),
-                            failure = placeholder(R.drawable.ic_generic_cat_drawable),
-                            contentScale = ContentScale.Fit,
-                            contentDescription = breed.breed.name + " Image"
-                        )
-                        Column {
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                text = "Origin: ${breed.details?.origin}",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Temperament: ${breed.details?.temperament}",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Description: ${breed.details?.description}",
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
+                TopAppBar(title = { Text(breed.breed.name) })
+            }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { innerPadding ->
 
-                            Button(
-                                onClick = { onFavoriteClick() },
+        Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+            if (uiState.error.isNotEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = uiState.error)
+                }
+            } else {
+                uiState.breed?.let { breed ->
+                    Scaffold(
+                        topBar = {
+                            TopAppBar(title = { Text(breed.breed.name) })
+                        }
+                    ) { padding ->
+                        Column(
+                            modifier = Modifier
+                                .padding(padding)
+                                .fillMaxSize()
+                                .padding(16.dp),
+                        ) {
+                            GlideImage(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .align(Alignment.End),
-                                colors = if (breed.isFavourite) {
-                                    ButtonDefaults.buttonColors(
-                                        containerColor = Color.Red
-                                    )
-                                } else {
-                                    ButtonDefaults.buttonColors(
-                                        containerColor = Color.Green,
-                                    )
+                                    .weight(1f),
+                                model = breed.image?.url,
+                                loading = placeholder(R.drawable.ic_generic_cat_drawable),
+                                failure = placeholder(R.drawable.ic_generic_cat_drawable),
+                                contentScale = ContentScale.Fit,
+                                contentDescription = breed.breed.name + " Image"
+                            )
+                            Column {
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Origin: ${breed.details?.origin}",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Temperament: ${breed.details?.temperament}",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Description: ${breed.details?.description}",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+
+                                Button(
+                                    onClick = { onFavoriteClick() },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.End),
+                                    colors = if (breed.isFavourite) {
+                                        ButtonDefaults.buttonColors(
+                                            containerColor = Color.Red
+                                        )
+                                    } else {
+                                        ButtonDefaults.buttonColors(
+                                            containerColor = Color.Green,
+                                        )
+                                    }
+                                ) {
+                                    Text(text = if (breed.isFavourite) "Remove from Favorites" else "Add to Favorites")
                                 }
-                            ) {
-                                Text(text = if (breed.isFavourite) "Remove from Favorites" else "Add to Favorites")
                             }
                         }
                     }
                 }
             }
-        }
-        // Show full screen loading only when loading the breed details
-        if (uiState.isLoading) {
-            FullScreenLoadingOverlay()
-        }
+            // Show full screen loading only when loading the breed details
+            if (uiState.isLoading) {
+                FullScreenLoadingOverlay()
+            }
 
+        }
     }
 }
 
@@ -167,7 +179,8 @@ fun CatDetailsScreenContentPreview() {
             isLoading = false,
             error = ""
         ),
-        onFavoriteClick = {}
+        onFavoriteClick = {},
+        snackbarHostState = remember { SnackbarHostState() }
     )
 }
 

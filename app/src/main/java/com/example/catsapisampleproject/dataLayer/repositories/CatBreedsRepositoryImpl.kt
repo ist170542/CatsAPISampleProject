@@ -219,18 +219,31 @@ constructor(
     override fun observeCatBreeds(): Flow<Resource<List<BreedWithImage>>> = flow {
 
         try {
-            val combinedFlow = combine(
-                localDataSource.observeCatBreeds(),         // Flow<List<CatBreed>>
-                localDataSource.observeCatBreedImages(),     // Flow<List<CatBreedImage>>
-                localDataSource.observeFavouriteCatBreeds()  // Flow<List<FavouriteEntity>>
-            ) { breeds, images, favourites ->
-                // Combine the three lists into one list of BreedWithImage.
-                createBreedWithImageList(breeds, images, favourites)
-            }.flowOn(Dispatchers.IO)
 
-            combinedFlow.collect { breedWithImageList ->
-                emit(Resource.Success(breedWithImageList))
+            //static fetch once
+            val breeds = withContext(Dispatchers.IO) { localDataSource.getCatBreeds() }
+            val images = withContext(Dispatchers.IO) { localDataSource.getCatBreedImages() }
+
+            //observe favourites and emit updates
+            localDataSource.observeFavouriteCatBreeds().map { favourites ->
+                val combined = createBreedWithImageList(breeds, images, favourites)
+                Resource.Success(combined)
+            }.collect { result ->
+                emit(result)
             }
+
+//            val combinedFlow = combine(
+//                localDataSource.observeCatBreeds(),         // Flow<List<CatBreed>>
+//                localDataSource.observeCatBreedImages(),     // Flow<List<CatBreedImage>>
+//                localDataSource.observeFavouriteCatBreeds()  // Flow<List<FavouriteEntity>>
+//            ) { breeds, images, favourites ->
+//                // Combine the three lists into one list of BreedWithImage.
+//                createBreedWithImageList(breeds, images, favourites)
+//            }.flowOn(Dispatchers.IO)
+//
+//            combinedFlow.collect { breedWithImageList ->
+//                emit(Resource.Success(breedWithImageList))
+//            }
         } catch (e: Exception) {
             emit(Resource.Error(e.message ?: "Error reading from the Database"))
         }
