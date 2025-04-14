@@ -1,5 +1,6 @@
 package com.example.catsapisampleproject.ui.components.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.catsapisampleproject.dataLayer.mappers.computeAverageMinLifeSpan
@@ -7,8 +8,10 @@ import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
 import com.example.catsapisampleproject.domain.useCases.GetCatBreedsUseCase
 import com.example.catsapisampleproject.util.Resource
+import com.example.catsapisampleproject.util.StringMapper
 import com.example.catsapisampleproject.util.StringUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -27,6 +30,7 @@ data class FavouriteListUIState(
 class BreedFavouriteListViewModel @Inject constructor(
     private val getCatBreedsUseCase: GetCatBreedsUseCase,
     private val deleteCatFavouriteUseCase: DeleteCatFavouriteUseCase,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavouriteListUIState())
@@ -41,7 +45,7 @@ class BreedFavouriteListViewModel @Inject constructor(
             when (result) {
                 // filter favourite items
                 is Resource.Error -> _uiState.update {
-                    it.copy(error = result.uiText ?: "An unexpected error occurred",
+                    it.copy(error = StringMapper(context = context).getErrorString(result.error),
                         isLoading = false)
                 }
                 is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
@@ -84,7 +88,10 @@ class BreedFavouriteListViewModel @Inject constructor(
                         _uiState.update { it.copy(isLoading = false, error = StringUtils.EMPTY_STRING) }
                     }
                     is Resource.Error -> _uiState.update {
-                        it.copy(isLoading = false, error = result.uiText ?: "Failed to delete favourite")
+                        it.copy(
+                            isLoading = false,
+                            error = StringMapper(context = context)
+                            .getErrorString(result.error))
                     }
                 }
             }

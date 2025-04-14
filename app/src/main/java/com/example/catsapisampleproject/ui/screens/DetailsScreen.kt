@@ -80,67 +80,62 @@ fun CatDetailsScreenContent(
                 }
             } else {
                 uiState.breed?.let { breed ->
-                    Scaffold(
-                        topBar = {
-                            TopAppBar(title = { Text(breed.breed.name) })
-                        }
-                    ) { padding ->
-                        Column(
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                    ) {
+                        GlideImage(
                             modifier = Modifier
-                                .padding(padding)
-                                .fillMaxSize()
-                                .padding(16.dp),
-                        ) {
-                            GlideImage(
+                                .fillMaxWidth()
+                                .weight(1f),
+                            model = breed.image?.url,
+                            loading = placeholder(R.drawable.ic_generic_cat_drawable),
+                            failure = placeholder(R.drawable.ic_generic_cat_drawable),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = breed.breed.name + " Image"
+                        )
+                        Column {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "Origin: ${breed.details?.origin}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Temperament: ${breed.details?.temperament}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Description: ${breed.details?.description}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Button(
+                                onClick = { onFavoriteClick() },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .weight(1f),
-                                model = breed.image?.url,
-                                loading = placeholder(R.drawable.ic_generic_cat_drawable),
-                                failure = placeholder(R.drawable.ic_generic_cat_drawable),
-                                contentScale = ContentScale.Fit,
-                                contentDescription = breed.breed.name + " Image"
-                            )
-                            Column {
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Text(
-                                    text = "Origin: ${breed.details?.origin}",
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = "Temperament: ${breed.details?.temperament}",
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = "Description: ${breed.details?.description}",
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-                                Spacer(modifier = Modifier.height(16.dp))
-
-                                Button(
-                                    onClick = { onFavoriteClick() },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .align(Alignment.End),
-                                    colors = if (breed.isFavourite) {
-                                        ButtonDefaults.buttonColors(
-                                            containerColor = Color.Red
-                                        )
-                                    } else {
-                                        ButtonDefaults.buttonColors(
-                                            containerColor = Color.Green,
-                                        )
-                                    }
-                                ) {
-                                    Text(text = if (breed.isFavourite) "Remove from Favorites" else "Add to Favorites")
+                                    .align(Alignment.End),
+                                colors = if (breed.isFavourite) {
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = Color.Red
+                                    )
+                                } else {
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = Color.Green,
+                                    )
                                 }
+                            ) {
+                                Text(text = if (breed.isFavourite) "Remove from Favorites" else "Add to Favorites")
                             }
                         }
                     }
                 }
             }
+        }
+
             // Show full screen loading only when loading the breed details
             if (uiState.isLoading) {
                 FullScreenLoadingOverlay()
@@ -148,7 +143,6 @@ fun CatDetailsScreenContent(
 
         }
     }
-}
 
 @Composable
 @Preview

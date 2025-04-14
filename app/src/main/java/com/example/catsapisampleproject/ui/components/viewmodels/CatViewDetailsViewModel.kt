@@ -1,5 +1,6 @@
 package com.example.catsapisampleproject.ui.components.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,8 +9,10 @@ import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCas
 import com.example.catsapisampleproject.domain.useCases.GetCatBreedUseCase
 import com.example.catsapisampleproject.domain.useCases.SetCatFavouriteUseCase
 import com.example.catsapisampleproject.util.Resource
+import com.example.catsapisampleproject.util.StringMapper
 import com.example.catsapisampleproject.util.StringUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -30,7 +33,8 @@ class CatViewDetailsViewModel @Inject constructor(
     savedStateHandle : SavedStateHandle,
     private val getCatBreedDetailsUseCase: GetCatBreedUseCase,
     private val setCatFavouriteUseCase: SetCatFavouriteUseCase,
-    private val deleteCatFavouriteUseCase: DeleteCatFavouriteUseCase
+    private val deleteCatFavouriteUseCase: DeleteCatFavouriteUseCase,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     // retrieve breedId from navigation arguments
@@ -62,7 +66,7 @@ class CatViewDetailsViewModel @Inject constructor(
                 is Resource.Error -> {
                     _uiState.update {
                         it.copy(
-                            error = result.uiText ?: "An unexpected error occurred",
+                            error = StringMapper(context).getErrorString(result.error),
                             isLoading = false
                         )
                     }
@@ -86,7 +90,7 @@ class CatViewDetailsViewModel @Inject constructor(
                             is Resource.Error -> {
                                 _uiState.update {
                                     it.copy(
-                                        favouriteOperationError = result.uiText ?: "An unexpected error occurred",
+                                        favouriteOperationError = StringMapper(context).getErrorString(result.error),
                                         isLoading = false
                                     )
                                 }
@@ -113,7 +117,7 @@ class CatViewDetailsViewModel @Inject constructor(
                             is Resource.Error -> {
                                 _uiState.update {
                                     it.copy(
-                                        favouriteOperationError = result.uiText ?: "An unexpected error occurred",
+                                        favouriteOperationError = StringMapper(context).getErrorString(result.error),
                                         isLoading = false
                                     )
                                 }

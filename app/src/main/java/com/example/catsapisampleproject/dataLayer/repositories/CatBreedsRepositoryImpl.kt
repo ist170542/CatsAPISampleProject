@@ -16,18 +16,16 @@ import com.example.catsapisampleproject.dataLayer.network.NetworkManager
 import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSource
 import com.example.catsapisampleproject.domain.model.CatBreedImage
 import com.example.catsapisampleproject.domain.model.CatBreed
+import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -245,7 +243,7 @@ constructor(
 //                emit(Resource.Success(breedWithImageList))
 //            }
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Error reading from the Database"))
+            emit(Resource.Error(ErrorType.DatabaseError))
         }
     }
 
@@ -261,7 +259,7 @@ constructor(
                 )
             )
             Log.d(TAG, "setCatBreedAsFavourite - No internet connection, insertion queued")
-            emit(Resource.Error("No internet connection, operation queued"))
+            emit(Resource.Error(ErrorType.OperationQueued))
             return@flow
         }
 
@@ -306,7 +304,7 @@ constructor(
                     pendingOperation = PendingOperation.Add
                 )
             )
-            emit(Resource.Error("Failed to favourite. Operation queued"))
+            emit(Resource.Error(ErrorType.OperationQueued))
         }
     }
 
@@ -316,7 +314,7 @@ constructor(
 
         if (existing == null) {
             Log.d(TAG, "deleteCatBreedAsFavourite - Favourite not found")
-            emit(Resource.Error("Favourite not found"))
+            emit(Resource.Error(ErrorType.DataNotFound))
             return@flow
         }
 
@@ -340,7 +338,7 @@ constructor(
                 }
             }
 
-            emit(Resource.Error("No internet connection, deletion handled offline"))
+            emit(Resource.Error(ErrorType.OperationQueued))
             return@flow
         }
 
@@ -359,7 +357,7 @@ constructor(
             localDataSource.insertFavourite(
                 existing.copy(pendingOperation = PendingOperation.Delete)
             )
-            emit(Resource.Error("Failed to delete favourite. Operation queued"))
+            emit(Resource.Error(ErrorType.OperationQueued))
         }
     }
 
@@ -371,7 +369,7 @@ constructor(
         val breed = withContext(Dispatchers.IO) { localDataSource.getCatBreedById(breedId) }
 
         if (breed == null) {
-            emit(Resource.Error("Cat breed not found"))
+            emit(Resource.Error(ErrorType.DataNotFound))
             return@flow
         }
 
@@ -392,7 +390,7 @@ constructor(
             }
         )
     }.catch {
-        emit(Resource.Error(it.message ?: "Unexpected error"))
+        emit(Resource.Error(ErrorType.UnknownError))
     }
 
 
