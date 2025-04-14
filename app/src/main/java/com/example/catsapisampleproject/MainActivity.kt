@@ -7,7 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
 import androidx.navigation.compose.rememberNavController
 import com.example.catsapisampleproject.ui.navigation.AppNavHost
-import com.example.catsapisampleproject.ui.theme.CatsAPISampleProjectTheme
+import com.example.catsapisampleproject.ui.theme.CatAPITheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CatsAPISampleProjectTheme {
+            CatAPITheme {
                 Surface {
                     val navController = rememberNavController()
                     AppNavHost(navController = navController)
