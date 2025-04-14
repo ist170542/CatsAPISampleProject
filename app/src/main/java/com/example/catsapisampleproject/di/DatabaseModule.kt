@@ -3,6 +3,7 @@ package com.example.catsapisampleproject.di
 import android.content.Context
 import androidx.room.Room
 import com.example.catsapisampleproject.dataLayer.local.AppDatabase
+import com.example.catsapisampleproject.dataLayer.local.CatBreedDetailsDao
 import com.example.catsapisampleproject.dataLayer.local.CatBreedImagesDao
 import com.example.catsapisampleproject.dataLayer.local.CatBreedsDao
 import com.example.catsapisampleproject.dataLayer.local.FavouriteBreedsDao
@@ -45,15 +46,22 @@ object DatabaseModule {
 
     @Singleton
     @Provides
+    fun provideCatBreedDetailsDao(database: AppDatabase) : CatBreedDetailsDao
+        = database.catBreedDetailsDao()
+
+    @Singleton
+    @Provides
     fun provideLocalDataSource(
         catBreedsDao: CatBreedsDao,
         catBreedImagesDao: CatBreedImagesDao,
-        favouriteBreedsDao: FavouriteBreedsDao
+        favouriteBreedsDao: FavouriteBreedsDao,
+        catBreedsDetailsDao: CatBreedDetailsDao
     )
     : LocalDataSource = LocalDataSourceImpl(
         catBreedsDao = catBreedsDao,
         catBreedImagesDao = catBreedImagesDao,
-        favouritesDao = favouriteBreedsDao
+        favouritesDao = favouriteBreedsDao,
+        catBreedDetailsDao = catBreedsDetailsDao
     )
 
 }
