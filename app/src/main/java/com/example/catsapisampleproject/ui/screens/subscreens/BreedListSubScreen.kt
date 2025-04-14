@@ -21,8 +21,10 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.catsapisampleproject.R
 import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
 import com.example.catsapisampleproject.domain.model.CatBreed
 import com.example.catsapisampleproject.domain.model.CatBreedImage
@@ -77,7 +79,7 @@ fun BreedListSubScreenContent(
                             onSearch = { expanded = false },
                             expanded = expanded,
                             onExpandedChange = { expanded  = it },
-                            placeholder = { Text("Type breed name to search...") },
+                            placeholder = { Text(stringResource(R.string.search_placeholder)) },
                             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                             onQueryChange = onSearchTextChange
                         )

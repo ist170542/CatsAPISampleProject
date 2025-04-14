@@ -186,7 +186,7 @@ fun BreedContent(
         breed.details?.origin?.let {
             InfoRow(
                 icon = Icons.Default.LocationOn,
-                title = "Origin",
+                title = stringResource(R.string.origin),
                 value = it
             )
         }
@@ -194,7 +194,7 @@ fun BreedContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            "Temperament",
+            stringResource(R.string.temperament),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )
@@ -211,7 +211,7 @@ fun BreedContent(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            "Description",
+            stringResource(R.string.description),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary
         )

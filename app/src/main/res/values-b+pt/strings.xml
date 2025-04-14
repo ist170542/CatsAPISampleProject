@@ -15,4 +15,24 @@
     <string name="remove_favorites">Remove from favourites</string>
     <string name="add_favorites">Add to favorites</string>
 
+    <!-- Details Screen -->
+    <string name="temperament">Temperamento</string>
+    <string name="description">Descrição</string>
+    <string name="origin">Origem</string>
+
+    <!-- Breed List Screen -->
+    <string name="search_placeholder">Escreva o nome da raça para pesquisar…</string>
+
+    <!-- Favorites Screen -->
+    <string name="favourite_breeds">Raças favoritas</string>
+    <string name="no_favourites_yet">Ainda não há favoritos</string>
+    <string name="average_min_life_span">Média de vida mínima: %s</string>
+
+    <!-- Composables -->
+    <string name="mark_favorite">Marcar como favorito</string>
+    <string name="unmark_favorite">Remover dos favoritos</string>
+
+    <!-- Splash Screen -->
+    <string name="retry">Tentar novamente</string>
+
 </resources>

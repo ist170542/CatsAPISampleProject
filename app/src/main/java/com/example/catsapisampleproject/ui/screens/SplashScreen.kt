@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -79,7 +80,7 @@ fun SplashScreenContent(
             ) {
                 GlideImage(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
+                        .padding(24.dp)
                         .align(Alignment.CenterHorizontally),
                     model = R.drawable.ic_cat_api_logo,
                     contentScale = ContentScale.Inside,
@@ -93,7 +94,7 @@ fun SplashScreenContent(
                             .padding(24.dp),
                         onClick = onRetryClicked,
                     ) {
-                        Text(text = "Retry")
+                        Text(text = stringResource(R.string.retry))
                     }
                 }
             }

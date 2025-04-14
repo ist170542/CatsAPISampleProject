@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -127,9 +128,9 @@ import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
                             Icons.Outlined.FavoriteBorder
                         },
                         contentDescription = if (breedWithImage.isFavourite) {
-                            "Unmark as favorite"
+                            stringResource(R.string.unmark_favorite)
                         } else {
-                            "Mark as favorite"
+                            stringResource(R.string.mark_favorite)
                         },
                         tint = MaterialTheme.colorScheme.primary
                     )
