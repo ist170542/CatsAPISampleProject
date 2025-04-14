@@ -3,7 +3,7 @@ package com.example.catsapisampleproject.ui.components.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.catsapisampleproject.dataLayer.mappers.computeAverageMinLifeSpan
+import com.example.catsapisampleproject.dataLayer.mappers.CatBreedsStatsUtilMapper.computeAverageMinLifeSpan
 import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
 import com.example.catsapisampleproject.domain.useCases.GetCatBreedsUseCase
@@ -51,7 +51,7 @@ class BreedFavouriteListViewModel @Inject constructor(
                 is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
                 is Resource.Success -> {
                     // filter favourite items
-                    val favouriteList = result.data?.filter { it.isFavourite } ?: emptyList()
+                    val favouriteList = result.data.filter { it.isFavourite } ?: emptyList()
                     val averageMinLifeSpan: Double? = computeAverageMinLifeSpan(favouriteList)
 
                     _uiState.update {
