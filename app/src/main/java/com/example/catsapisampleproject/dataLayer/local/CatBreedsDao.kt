@@ -17,19 +17,7 @@ interface CatBreedsDao {
     @Query("SELECT * FROM cat_breeds")
     suspend fun getAllCatBreeds(): List<CatBreed>
 
-    @Update
-    suspend fun updateCatBreed(catBreed: CatBreed)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCatBreed(catBreed: CatBreed)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCatBreeds(catBreeds: List<CatBreed>)
-
-    @Query("SELECT * FROM cat_breeds")
-    fun observeAllCatBreeds(): Flow<List<CatBreed>>
-
-    @Query("SELECT * FROM cat_breeds WHERE id = :breedId")
-    fun observeCatBreedById(breedId: String): Flow<CatBreed?>
 
 }

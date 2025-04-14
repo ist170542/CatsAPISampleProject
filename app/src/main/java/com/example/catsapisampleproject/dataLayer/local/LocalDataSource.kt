@@ -10,21 +10,12 @@ interface LocalDataSource {
     //cat breeds
     suspend fun getCatBreeds(): List<CatBreed>
     suspend fun getCatBreedById(breedId: String): CatBreed?
-    suspend fun updateCatBreed(catBreed: CatBreed)
     suspend fun insertCatBreeds(catBreeds: List<CatBreed>)
-    suspend fun insertCatBreed(catBreed: CatBreed)
-    fun observeCatBreeds(): Flow<List<CatBreed>>
-    fun observeCatBreedById(breedId: String): Flow<CatBreed?>
 
     //cat breed images
     suspend fun getCatBreedImages() : List<CatBreedImage>?
     suspend fun getCatBreedImageByBreedId(breedId: String): CatBreedImage?
-    suspend fun getCatBreedImageById(imageId: String): CatBreedImage?
-    suspend fun updateCatBreedImage(catBreedImage: CatBreedImage)
     suspend fun insertCatBreedImages(catBreedImages: List<CatBreedImage>)
-    suspend fun insertCatBreedImage(catBreedImage: CatBreedImage)
-    fun observeCatBreedImages(): Flow<List<CatBreedImage>>
-    fun observeCatBreedImageByBreedId(breedId: String): Flow<CatBreedImage?>
 
     //favourites
     suspend fun getFavouriteCatBreeds(): List<FavouriteEntity>
