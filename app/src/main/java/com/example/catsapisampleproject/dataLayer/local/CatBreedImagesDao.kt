@@ -32,4 +32,7 @@ interface CatBreedImagesDao {
     @Query("SELECT * FROM cat_breeds_images")
     fun observeAllCatBreedImages(): Flow<List<CatBreedImage>>
 
+    @Query("SELECT * FROM cat_breeds_images WHERE breed_id = :breedId")
+    fun observeCatBreedImageByBreedId(breedId: String): Flow<CatBreedImage?>
+
 }

@@ -12,4 +12,5 @@ interface CatBreedsRepository {
     fun deleteCatBreedAsFavourite(imageReferenceId: String): Flow<Resource<Boolean>>
 
     fun observeCatBreeds(): Flow<Resource<List<BreedWithImage>>>
+    fun observeCatBreedById(breedId: String): Flow<Resource<BreedWithImage>>
 }

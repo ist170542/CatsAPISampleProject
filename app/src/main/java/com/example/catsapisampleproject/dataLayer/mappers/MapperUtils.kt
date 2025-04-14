@@ -1,6 +1,7 @@
 package com.example.catsapisampleproject.dataLayer.mappers
 
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
+import com.example.catsapisampleproject.dataLayer.local.entities.PendingOperation
 import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
 import com.example.catsapisampleproject.domain.model.CatBreed
 import com.example.catsapisampleproject.domain.model.CatBreedImage
@@ -9,12 +10,20 @@ fun createBreedWithImageList(breeds: List<CatBreed>,
                              images: List<CatBreedImage>?,
                              favourites: List<FavouriteEntity>): List<BreedWithImage> {
 
-    val favouriteSet = favourites.map { it.imageId }.toSet()
-
     return breeds.map { breed ->
-        val isFavourite = breed.referenceImageId?.let { favouriteSet.contains(it) } ?: false
+        val imageId = breed.referenceImageId
+        val relevantFavourite = favourites.find { fav ->
+            fav.imageId == imageId && fav.pendingOperation != PendingOperation.Delete
+        }
+
+        val isFavourite = relevantFavourite != null
         val image = images?.find { it.breed_id == breed.id }
-        BreedWithImage(breed, image, isFavourite)
+
+        BreedWithImage(
+            breed = breed,
+            image = image,
+            isFavourite = isFavourite
+        )
     }
 }
 

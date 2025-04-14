@@ -13,7 +13,6 @@ class RemoteDataSourceImpl @Inject constructor(
 
     override suspend fun getCatBreeds(): List<BreedDTO> {
 
-        //TODO error handling
         val response = catApiService.getCatBreeds()
 
         if (response.isSuccessful) {

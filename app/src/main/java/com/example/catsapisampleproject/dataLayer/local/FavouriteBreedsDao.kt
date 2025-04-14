@@ -32,4 +32,7 @@ interface FavouriteBreedsDao {
     @Query("SELECT * FROM favourites")
     fun observeAllFavourites(): Flow<List<FavouriteEntity>>
 
+    @Query("SELECT * FROM favourites WHERE imageId = :imageId")
+    fun observeFavouriteByImageId(imageId: String): Flow<FavouriteEntity?>
+
 }

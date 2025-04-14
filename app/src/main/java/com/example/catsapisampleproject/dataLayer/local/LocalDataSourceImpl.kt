@@ -35,6 +35,10 @@ class LocalDataSourceImpl(
         return catBreedsDao.observeAllCatBreeds()
     }
 
+    override fun observeCatBreedById(breedId: String): Flow<CatBreed?> {
+        return catBreedsDao.observeCatBreedById(breedId)
+    }
+
     override suspend fun getCatBreedImages(): List<CatBreedImage>? {
         return catBreedImagesDao.getAllCatBreedImages()
     }
@@ -63,6 +67,10 @@ class LocalDataSourceImpl(
         return catBreedImagesDao.observeAllCatBreedImages()
     }
 
+    override fun observeCatBreedImageByBreedId(breedId: String): Flow<CatBreedImage?> {
+        return catBreedImagesDao.observeCatBreedImageByBreedId(breedId)
+    }
+
     override suspend fun getFavouriteCatBreeds(): List<FavouriteEntity> {
         return favouritesDao.getAllFavourites()
     }
@@ -89,6 +97,10 @@ class LocalDataSourceImpl(
 
     override fun observeFavouriteCatBreeds(): Flow<List<FavouriteEntity>> {
         return favouritesDao.observeAllFavourites()
+    }
+
+    override fun observeFavouriteByImageId(imageId: String): Flow<FavouriteEntity?> {
+        return favouritesDao.observeFavouriteByImageId(imageId)
     }
 
 }

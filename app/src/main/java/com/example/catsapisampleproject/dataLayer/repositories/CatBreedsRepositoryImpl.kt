@@ -1,9 +1,11 @@
 package com.example.catsapisampleproject.dataLayer.repositories
 
 import android.util.Log
+import com.example.catsapisampleproject.dataLayer.dto.responses.BreedDTO
 import com.example.catsapisampleproject.dataLayer.dto.responses.FavouriteDTO
 import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
+import com.example.catsapisampleproject.dataLayer.local.entities.PendingOperation
 import com.example.catsapisampleproject.dataLayer.mappers.CatBreedMapper
 import com.example.catsapisampleproject.dataLayer.mappers.FavouriteEntityMapper
 import com.example.catsapisampleproject.dataLayer.mappers.createBreedWithImageList
@@ -13,13 +15,18 @@ import com.example.catsapisampleproject.domain.model.CatBreedImage
 import com.example.catsapisampleproject.domain.model.CatBreed
 import com.example.catsapisampleproject.util.Resource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -50,6 +57,12 @@ constructor(
 
                 Log.d(TAG, "Network available. Trying to fetch cat breeds.")
 
+                // Sync pending favourites
+                withContext(Dispatchers.IO) {
+                    val localFavs = localDataSource.getFavouriteCatBreeds()
+                    syncPendingFavorites(localFavs)
+                }
+
                 // Fetch breedDTOs and FavouritesDto in parallel
                 val (breedDTOs, favouritesDTO) = coroutineScope {
                     val breedDTOsDeferred = async { remoteDataSource.getCatBreeds() }
@@ -57,42 +70,30 @@ constructor(
                     breedDTOsDeferred.await() to favouritesDeferred.await()
                 }
 
+                val remoteFavourites = favouritesDTO.map { favDTO ->
+                    FavouriteEntityMapper().fromDto(favDTO)
+                }
+
+                // Some might still be pending (not successful sync)
+                val localPending = withContext(Dispatchers.IO){
+                    localDataSource.getFavouriteCatBreeds()
+                        .filter { it.pendingOperation != PendingOperation.None }
+                }
+
+                val favouritesToBeStored = remoteFavourites + localPending
+
                 val breeds = breedDTOs.map { dto ->
                     CatBreedMapper().fromDto(dto)
                 }
-                localDataSource.insertCatBreeds(breeds)
 
-                val favouriteEntities = favouritesDTO.map { favDTO ->
-                   FavouriteEntityMapper().fromDto(favDTO)
-                }
-
-                // Update the local favourites table with fresh data.
-                withContext(Dispatchers.IO) { localDataSource.deleteAllFavourites() }
-                withContext(Dispatchers.IO) { localDataSource.insertFavourites(favouriteEntities) }
-
-                val catBreedImageEntities = coroutineScope {
-                    // Iterate over the breedDTOs, mapping only those that have a non-empty referenceImageId.
-                    breedDTOs.mapNotNull { dto ->
-                        // Check if the referenceImageId is null or empty.
-                        if (dto.referenceImageId.isNullOrEmpty()) {
-                            null // Skip this DTO if there is no valid referenceImageId.
-                        } else {
-                            // Launch a concurrent request to fetch the image.
-                            async {
-                                CatBreedImage(
-                                    breed_id = dto.id,
-                                    url = remoteDataSource.getCatBreedImageByReferenceImageId(dto.referenceImageId).url,
-                                    image_id = dto.referenceImageId
-                                )
-                            }
-                        }
-                    }.awaitAll()
-                }
+                val catBreedImageEntities = processImagesConcurrently(breedDTOs)
 
                 // save freshly retrieved data to local database
                 withContext(Dispatchers.IO) {
                     localDataSource.insertCatBreeds(breeds)
                     localDataSource.insertCatBreedImages(catBreedImageEntities)
+                    localDataSource.deleteAllFavourites()
+                    localDataSource.insertFavourites(favouritesToBeStored)
                 }
 
                 Log.d(TAG, "Successfully retrieved and stored Cat Breeds data")
@@ -104,10 +105,67 @@ constructor(
                 emit(tryToFetchOfflineData())
             }
         } catch (e: Exception) {
-            Log.d(TAG, "Exception fetching cat breeds: ${e.message}. Trying offline")
+            Log.d(TAG, "Exception fetching cat breeds: ${e.stackTraceToString()}. Trying offline")
             emit(tryToFetchOfflineData())
         }
 
+    }
+
+    private suspend fun processImagesConcurrently(breedDTOs: List<BreedDTO>) =
+        coroutineScope {
+            breedDTOs.mapNotNull { dto ->
+                dto.referenceImageId?.let { imageId ->
+                    async(Dispatchers.IO) {
+                        try {
+                            CatBreedImage(
+                                breed_id = dto.id,
+                                url = remoteDataSource.getCatBreedImageByReferenceImageId(imageId).url,
+                                image_id = imageId
+                            )
+                        } catch (e: Exception) {
+                            Log.w(TAG, "Failed to fetch image $imageId", e)
+                            null
+                        }
+                    }
+                }
+            }.awaitAll().filterNotNull()
+        }
+
+    private suspend fun syncPendingFavorites(pending: List<FavouriteEntity>) {
+        pending.forEach { fav ->
+            withContext(Dispatchers.IO) {
+                try {
+                    when (fav.pendingOperation) {
+                        PendingOperation.Add -> {
+                            val response = remoteDataSource.postCatBreedAsFavourite(fav.imageId)
+                            Log.d(TAG, "Successfully synced add fav ${fav.imageId}. " +
+                                    "Storing in local DB")
+                            localDataSource.insertFavourite(
+                                fav.copy(
+                                    favouriteId = response.favouriteID,
+                                    pendingOperation = PendingOperation.None
+                                )
+                            )
+                        }
+
+                        PendingOperation.Delete -> {
+                            fav.favouriteId?.let { favId ->
+                                Log.d(TAG, "Successfully synced delete fav ${fav.imageId}. " +
+                                        "Removing from local DB")
+                                remoteDataSource.deleteCatBreedAsFavourite(favId)
+                                localDataSource.deleteFavourite(fav.imageId)
+                            }
+                        }
+
+                        else -> {
+                            //do nothing
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.w(TAG, "Failed to sync fav ${fav.imageId}, keeping pending state")
+                }
+            }
+        }
     }
 
     private suspend fun tryToFetchOfflineData() : InitializationResult {
@@ -117,17 +175,11 @@ constructor(
         val offlineImages = withContext(Dispatchers.IO) { localDataSource.getCatBreedImages() }
         val offlineFavourites = withContext(Dispatchers.IO) { localDataSource.getFavouriteCatBreeds() }
 
-        // Compute favourite flag from local favourites.
-        val localFavSet = offlineFavourites.map { it.imageId }.toSet()
-        val breedsWithLocalFav = offlineBreeds.map { breed ->
-            breed.copy()  // No isFavourite here in CatBreed
-        }
-
-        val breedWithImageList = breedsWithLocalFav.map { breed ->
-            val isFavourite = breed.referenceImageId?.let { localFavSet.contains(it) } ?: false
-            val image = offlineImages?.find { it.breed_id == breed.id }
-            BreedWithImage(breed, image, isFavourite)
-        }
+        val breedWithImageList = createBreedWithImageList(
+            offlineBreeds,
+            offlineImages,
+            offlineFavourites
+        )
 
         return if (breedWithImageList.isEmpty()) {
             Log.d(TAG, "No stored data available for offline functionality")
@@ -170,19 +222,47 @@ constructor(
         }
     }
 
-
-
     override fun setCatBreedAsFavourite(imageReferenceId: String): Flow<Resource<FavouriteEntity>> = flow {
+
+        if (!networkManager.isConnected()) {
+
+            localDataSource.insertFavourite(
+                FavouriteEntity(
+                    favouriteId = null,
+                    imageId = imageReferenceId,
+                    pendingOperation = PendingOperation.Add
+                )
+            )
+            Log.d(TAG, "setCatBreedAsFavourite - No internet connection, insertion queued")
+            emit(Resource.Error("No internet connection, operation queued"))
+            return@flow
+        }
+
         try {
             val favouriteDTO : FavouriteDTO
                 = remoteDataSource.postCatBreedAsFavourite(imageReferenceId)
 
-            localDataSource.insertFavourite(
-                FavouriteEntity(
-                favouriteId = favouriteDTO.favouriteID,
-                imageId = imageReferenceId
+            // Check if a pending delete existed — cancel it
+            val existing = localDataSource.getFavouriteByImageId(imageReferenceId)
+
+            if (existing?.pendingOperation == PendingOperation.Delete) {
+                Log.d(TAG, "setCatBreedAsFavourite - Cancel the pending delete by updating the entry")
+                // Cancel the pending delete by updating the entry
+                val updated = existing.copy(
+                    pendingOperation = PendingOperation.None,
+                    favouriteId = favouriteDTO.favouriteID // From server if online, or keep old one if offline
                 )
-            )
+                localDataSource.insertFavourite(updated)
+            } else {
+                // Normal add
+                Log.d(TAG, "setCatBreedAsFavourite - No pending operation found, inserting new entry")
+                val newEntry = FavouriteEntity(
+                    imageId = imageReferenceId,
+                    favouriteId = favouriteDTO.favouriteID,
+                    pendingOperation = PendingOperation.None
+                )
+                localDataSource.insertFavourite(newEntry)
+            }
 
             emit(Resource.Success(
                 FavouriteEntity(
@@ -192,28 +272,100 @@ constructor(
             ))
 
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Unknown error"))
+            Log.d(TAG, "setCatBreedAsFavourite - Failed to favourite. Insertion queued")
+            localDataSource.insertFavourite(
+                FavouriteEntity(imageId = imageReferenceId,
+                    favouriteId = null,
+                    pendingOperation = PendingOperation.Add
+                )
+            )
+            emit(Resource.Error("Failed to favourite. Operation queued"))
         }
     }
 
     override fun deleteCatBreedAsFavourite(imageReferenceId: String): Flow<Resource<Boolean>> = flow {
-        try {
-            // Look up the stored favourite record by imageReferenceId.
-            val favourite = localDataSource.getFavouriteByImageId(imageReferenceId)
-            if (favourite != null) {
-                val success = remoteDataSource.deleteCatBreedAsFavourite(favourite.favouriteId)
-                if (success) {
-                    localDataSource.deleteFavourite(imageReferenceId)
-                    emit(Resource.Success(true))
-                } else {
-                    emit(Resource.Error("Failed to remove favourite"))
-                }
-            } else {
-                emit(Resource.Error("No favourite found for this breed"))
-            }
-        } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Unknown error"))
+
+        val existing = localDataSource.getFavouriteByImageId(imageReferenceId)
+
+        if (existing == null) {
+            Log.d(TAG, "deleteCatBreedAsFavourite - Favourite not found")
+            emit(Resource.Error("Favourite not found"))
+            return@flow
         }
+
+        if (!networkManager.isConnected()) {
+            Log.d(TAG, "deleteCatBreedAsFavourite - No internet connection")
+
+            when (existing.pendingOperation) {
+                PendingOperation.Add -> {
+                    // The favourite was never committed to the server, delete it from db
+                    Log.d(TAG, "deleteCatBreedAsFavourite - Cancelling pending insertion")
+                    localDataSource.deleteFavourite(imageReferenceId)
+                }
+                else -> {
+                    // Mark for deletion
+                    Log.d(TAG, "deleteCatBreedAsFavourite - Marking existing as pending deletion")
+                    if (existing.pendingOperation != PendingOperation.Delete) {
+                        localDataSource.insertFavourite(
+                            existing.copy(pendingOperation = PendingOperation.Delete)
+                        )
+                    }
+                }
+            }
+
+            emit(Resource.Error("No internet connection, deletion handled offline"))
+            return@flow
+        }
+
+        try {
+            if (!existing.favouriteId.isNullOrEmpty()) {
+                remoteDataSource.deleteCatBreedAsFavourite(existing.favouriteId)
+            }
+
+            Log.d(TAG, "deleteCatBreedAsFavourite - Favourite deleted, removing straight from db")
+            localDataSource.deleteFavourite(imageReferenceId)
+
+            emit(Resource.Success(true))
+        } catch (e: Exception) {
+            // Queue deletion if server fails
+            Log.d(TAG, "deleteCatBreedAsFavourite - Exception: ${e.message}")
+            localDataSource.insertFavourite(
+                existing.copy(pendingOperation = PendingOperation.Delete)
+            )
+            emit(Resource.Error("Failed to delete favourite. Operation queued"))
+        }
+    }
+
+    /**
+     *  Fetches data from the local storage and emits updates for the "subscribing" components to act
+     * accordingly
+     */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun observeCatBreedById(breedId: String): Flow<Resource<BreedWithImage>> {
+        val breedFlow = localDataSource.observeCatBreedById(breedId)
+        val imageFlow = localDataSource.observeCatBreedImageByBreedId(breedId)
+
+        // Combine breed and image first
+        val combinedFlow = combine(breedFlow, imageFlow) { breed, image ->
+            Pair(breed, image)
+        }.flatMapLatest { (breed, image) ->
+            if (breed == null) {
+                flowOf(Resource.Error("Cat breed not found"))
+            } else {
+                val imageId = breed.referenceImageId
+                if (imageId == null) {
+                    flowOf(Resource.Success(BreedWithImage(breed, null, isFavourite = false)))
+                } else {
+                    localDataSource.observeFavouriteByImageId(imageId).map { favourite ->
+                        val isFavourite = favourite != null && favourite.pendingOperation != PendingOperation.Delete
+                        Resource.Success(BreedWithImage(breed, image, isFavourite))
+                    }
+                }
+            }
+        }
+
+        return combinedFlow
+            .catch { e -> emit(Resource.Error(e.message ?: "Unexpected error")) }
     }
 
     override fun getCatBreed(breedId: String): Flow<Resource<BreedWithImage>> = flow {
