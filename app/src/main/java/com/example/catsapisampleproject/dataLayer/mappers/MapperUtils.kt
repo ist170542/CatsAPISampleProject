@@ -26,9 +26,3 @@ fun createBreedWithImageList(breeds: List<CatBreed>,
         )
     }
 }
-
-fun computeAverageMinLifeSpan(breeds: List<BreedWithImage>): Double? {
-    val values = breeds.mapNotNull { it.breed.minLifeSpan?.toDouble() }
-    return if (values.isNotEmpty()) values.average() else null
-}
-
