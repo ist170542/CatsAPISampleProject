@@ -14,9 +14,6 @@ class CatBreedsMapperTest {
         val breed = CatBreed(
             id = "1",
             name = "Abyssinian",
-            description = "Active, playful cat",
-            temperament = "Active",
-            origin = "Egypt",
             referenceImageId = "img1",
             minLifeSpan = 10,
             maxLifeSpan = 15
@@ -47,9 +44,6 @@ class CatBreedsMapperTest {
         val breed = CatBreed(
             id = "1",
             name = "Abyssinian",
-            description = "Active, playful cat",
-            temperament = "Active",
-            origin = "Egypt",
             referenceImageId = "img1",
             minLifeSpan = 10,
             maxLifeSpan = 15
