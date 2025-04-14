@@ -12,5 +12,7 @@
     <string name="error_missing_breed_id">Breed ID missing</string>
     <string name="error_favourite_operation_failed">Failed to %1$s to favourite</string>
     <string name="error_data_not_found">Data not found</string>
+    <string name="remove_favorites">Remove from favorites</string>
+    <string name="add_favorites">Add to favorites</string>
 
 </resources>

@@ -12,4 +12,7 @@
     <string name="error_missing_breed_id">Falta o ID da raça.</string>
     <string name="error_favourite_operation_failed">Falha ao %1$s favorito.</string>
     <string name="error_data_not_found">Dados não encontrados</string>
+    <string name="remove_favorites">Remove from favourites</string>
+    <string name="add_favorites">Add to favorites</string>
+
 </resources>

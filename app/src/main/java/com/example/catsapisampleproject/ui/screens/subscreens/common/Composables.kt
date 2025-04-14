@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -98,8 +99,10 @@ import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
                     // Breed name below the image
                     Text(
                         text = breedWithImage.breed.name,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.bodyLarge,
+                        maxLines = 2,
                         textAlign = TextAlign.Center,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .padding(8.dp)
                             .fillMaxWidth()

@@ -1,17 +1,13 @@
 package com.example.catsapisampleproject.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 
 // Theme.kt
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.dp
 
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF6750A4),
@@ -75,7 +71,7 @@ fun CatAPITheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = typography,
-        shapes = com.example.catsapisampleproject.ui.theme.shapes,
+        shapes = shapes,
         content = content
     )
 }
