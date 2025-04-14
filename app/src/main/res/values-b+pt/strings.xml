@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">CatsAPISampleProject</string>
+
+    <!-- Generic messages -->
+    <string name="error_network">Não foi possível contactar o servidor. Verifique a sua ligação.</string>
+    <string name="error_server">Ocorreu um erro no servidor.</string>
+    <string name="error_database">Falha ao aceder aos dados locais.</string>
+    <string name="error_unknown">Ocorreu um erro inesperado.</string>
+
+    <!-- Specific messages -->
+    <string name="error_no_offline_data">Não existem dados disponíveis offline.</string>
+    <string name="error_missing_breed_id">Falta o ID da raça.</string>
+    <string name="error_favourite_operation_failed">Falha ao %1$s favorito.</string>
+    <string name="error_data_not_found">Dados não encontrados</string>
+</resources>

@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">CatsAPISampleProject</string>
+
+    <!-- Generic messages -->
+    <string name="error_network">Couldn\'t reach server. Check your connection</string>
+    <string name="error_server">Server error occurred</string>
+    <string name="error_database">Failed to access local data</string>
+    <string name="error_unknown">An unexpected error occurred</string>
+
+    <!-- Specific messages -->
+    <string name="error_no_offline_data">No offline data available</string>
+    <string name="error_missing_breed_id">Breed ID missing</string>
+    <string name="error_favourite_operation_failed">Failed to %1$s to favourite</string>
+    <string name="error_data_not_found">Data not found</string>
+
 </resources>
