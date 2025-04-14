@@ -1,6 +1,6 @@
 package com.example.catsapisampleproject.domain.useCases
 
-import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
+import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImageAndDetails
 import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -15,10 +15,10 @@ import javax.inject.Inject
 class GetCatBreedUseCase @Inject constructor(
     private val catRepository: CatBreedsRepository
 ) {
-    operator fun invoke(breedId: String): Flow<Resource<BreedWithImage>> = flow {
+    operator fun invoke(breedId: String): Flow<Resource<BreedWithImageAndDetails>> = flow {
         try {
             emit(Resource.Loading())
-            val catBreeds = catRepository.getCatBreed(breedId)
+            val catBreeds = catRepository.observeCatBreedDetailsById(breedId)
 
             catBreeds.collect {
                     result -> emit(result)

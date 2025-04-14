@@ -1,5 +1,6 @@
 package com.example.catsapisampleproject.dataLayer.local
 
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedDetailsEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
 import com.example.catsapisampleproject.domain.model.CatBreed
 import com.example.catsapisampleproject.domain.model.CatBreedImage
@@ -8,7 +9,8 @@ import kotlinx.coroutines.flow.Flow
 class LocalDataSourceImpl(
     private val catBreedsDao: CatBreedsDao,
     private val catBreedImagesDao: CatBreedImagesDao,
-    private val favouritesDao: FavouriteBreedsDao
+    private val favouritesDao: FavouriteBreedsDao,
+    private val catBreedDetailsDao: CatBreedDetailsDao
 ) : LocalDataSource {
 
     override suspend fun getCatBreeds(): List<CatBreed> {
@@ -101,6 +103,18 @@ class LocalDataSourceImpl(
 
     override fun observeFavouriteByImageId(imageId: String): Flow<FavouriteEntity?> {
         return favouritesDao.observeFavouriteByImageId(imageId)
+    }
+
+    override suspend fun getCatBreedDetails(breedId: String): CatBreedDetailsEntity? {
+        return catBreedDetailsDao.getCatBreedDetails(breedId)
+    }
+
+    override suspend fun insertCatBreedDetails(catBreed: CatBreedDetailsEntity) {
+        catBreedDetailsDao.insertCatBreedDetails(catBreed)
+    }
+
+    override suspend fun insertCatBreedsDetails(catBreeds: List<CatBreedDetailsEntity>) {
+        catBreedDetailsDao.insertCatBreedsDetails(catBreeds)
     }
 
 }

@@ -4,8 +4,11 @@ import android.util.Log
 import com.example.catsapisampleproject.dataLayer.dto.responses.BreedDTO
 import com.example.catsapisampleproject.dataLayer.dto.responses.FavouriteDTO
 import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedDetailsEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.PendingOperation
+import com.example.catsapisampleproject.dataLayer.local.entities.isEffectiveFavourite
+import com.example.catsapisampleproject.dataLayer.mappers.CatBreedDetailsMapper
 import com.example.catsapisampleproject.dataLayer.mappers.CatBreedMapper
 import com.example.catsapisampleproject.dataLayer.mappers.FavouriteEntityMapper
 import com.example.catsapisampleproject.dataLayer.mappers.createBreedWithImageList
@@ -22,9 +25,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -33,6 +35,13 @@ import javax.inject.Inject
 data class BreedWithImage(
     val breed: CatBreed,
     val image: CatBreedImage?,
+    val isFavourite: Boolean = false
+)
+
+data class BreedWithImageAndDetails(
+    val breed: CatBreed,
+    val image: CatBreedImage?,
+    val details: CatBreedDetailsEntity?,
     val isFavourite: Boolean = false
 )
 
@@ -86,11 +95,16 @@ constructor(
                     CatBreedMapper().fromDto(dto)
                 }
 
+                val breedsDetails = breedDTOs.map { dto ->
+                    CatBreedDetailsMapper().fromDTO(dto)
+                }
+
                 val catBreedImageEntities = processImagesConcurrently(breedDTOs)
 
                 // save freshly retrieved data to local database
                 withContext(Dispatchers.IO) {
                     localDataSource.insertCatBreeds(breeds)
+                    localDataSource.insertCatBreedsDetails(breedsDetails)
                     localDataSource.insertCatBreedImages(catBreedImageEntities)
                     localDataSource.deleteAllFavourites()
                     localDataSource.insertFavourites(favouritesToBeStored)
@@ -340,51 +354,52 @@ constructor(
      *  Fetches data from the local storage and emits updates for the "subscribing" components to act
      * accordingly
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun observeCatBreedById(breedId: String): Flow<Resource<BreedWithImage>> {
-        val breedFlow = localDataSource.observeCatBreedById(breedId)
-        val imageFlow = localDataSource.observeCatBreedImageByBreedId(breedId)
+    override fun observeCatBreedDetailsById(breedId: String): Flow<Resource<BreedWithImageAndDetails>> = flow {
+        val breed = withContext(Dispatchers.IO) { localDataSource.getCatBreedById(breedId) }
 
-        // Combine breed and image first
-        val combinedFlow = combine(breedFlow, imageFlow) { breed, image ->
-            Pair(breed, image)
-        }.flatMapLatest { (breed, image) ->
-            if (breed == null) {
-                flowOf(Resource.Error("Cat breed not found"))
-            } else {
-                val imageId = breed.referenceImageId
-                if (imageId == null) {
-                    flowOf(Resource.Success(BreedWithImage(breed, null, isFavourite = false)))
-                } else {
-                    localDataSource.observeFavouriteByImageId(imageId).map { favourite ->
-                        val isFavourite = favourite != null && favourite.pendingOperation != PendingOperation.Delete
-                        Resource.Success(BreedWithImage(breed, image, isFavourite))
-                    }
-                }
-            }
+        if (breed == null) {
+            emit(Resource.Error("Cat breed not found"))
+            return@flow
         }
 
-        return combinedFlow
-            .catch { e -> emit(Resource.Error(e.message ?: "Unexpected error")) }
+
+        val image = withContext(Dispatchers.IO) { localDataSource.getCatBreedImageByBreedId(breedId) }
+        val details = withContext(Dispatchers.IO) { localDataSource.getCatBreedDetails(breedId) }
+        val imageId = breed.referenceImageId
+
+        if (imageId == null) {
+            emit(Resource.Success(BreedWithImageAndDetails(breed, image, isFavourite = false, details = details)))
+            return@flow
+        }
+
+        emitAll(
+            localDataSource.observeFavouriteByImageId(imageId).map { favourite ->
+                val isFavourite = favourite?.isEffectiveFavourite() == true
+                Resource.Success(BreedWithImageAndDetails(breed, image, isFavourite = isFavourite, details = details))
+            }
+        )
+    }.catch {
+        emit(Resource.Error(it.message ?: "Unexpected error"))
     }
 
-    override fun getCatBreed(breedId: String): Flow<Resource<BreedWithImage>> = flow {
-        try {
-            val breed = withContext(Dispatchers.IO) { localDataSource.getCatBreedById(breedId) }
-            val image = withContext(Dispatchers.IO) { localDataSource.getCatBreedImageByBreedId(breedId) }
-            val isFavourite = withContext(Dispatchers.IO) {
-                image?.let {
-                    localDataSource.getFavouriteByImageId(imageId = it.image_id)
-                }
-            }
 
-            breed?.let {
-                emit(Resource.Success(BreedWithImage(it, image, isFavourite != null)))
-            }
-
-            } catch (e: Exception) {
-                emit(Resource.Error(e.message ?: "Unknown error"))
-            }
-    }
+//    override fun getCatBreed(breedId: String): Flow<Resource<BreedWithImage>> = flow {
+//        try {
+//            val breed = withContext(Dispatchers.IO) { localDataSource.getCatBreedById(breedId) }
+//            val image = withContext(Dispatchers.IO) { localDataSource.getCatBreedImageByBreedId(breedId) }
+//            val isFavourite = withContext(Dispatchers.IO) {
+//                image?.let {
+//                    localDataSource.getFavouriteByImageId(imageId = it.image_id)
+//                }
+//            }
+//
+//            breed?.let {
+//                emit(Resource.Success(BreedWithImage(it, image, isFavourite != null)))
+//            }
+//
+//            } catch (e: Exception) {
+//                emit(Resource.Error(e.message ?: "Unknown error"))
+//            }
+//    }
 
 }

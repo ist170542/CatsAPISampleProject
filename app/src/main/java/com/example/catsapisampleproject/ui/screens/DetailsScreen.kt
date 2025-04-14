@@ -24,7 +24,9 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.example.catsapisampleproject.R
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedDetailsEntity
 import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
+import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImageAndDetails
 import com.example.catsapisampleproject.domain.model.CatBreed
 import com.example.catsapisampleproject.domain.model.CatBreedImage
 import com.example.catsapisampleproject.ui.components.viewmodels.CatDetailsUIState
@@ -91,17 +93,17 @@ fun CatDetailsScreenContent(
                         Column {
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = "Origin: ${breed.breed.origin}",
+                                text = "Origin: ${breed.details?.origin}",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Temperament: ${breed.breed.temperament}",
+                                text = "Temperament: ${breed.details?.temperament}",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Description: ${breed.breed.description}",
+                                text = "Description: ${breed.details?.description}",
                                 style = MaterialTheme.typography.bodyLarge
                             )
                             Spacer(modifier = Modifier.height(16.dp))
@@ -141,13 +143,10 @@ fun CatDetailsScreenContent(
 fun CatDetailsScreenContentPreview() {
     CatDetailsScreenContent(
         uiState = CatDetailsUIState(
-            breed = BreedWithImage(
+            breed = BreedWithImageAndDetails(
                 breed = CatBreed(
                     id = "id",
                     name = "name",
-                    description = "desc",
-                    temperament = "temperament",
-                    origin = "origin",
                     referenceImageId = "refImgId",
                     minLifeSpan = 1,
                     maxLifeSpan = 1
@@ -157,7 +156,13 @@ fun CatDetailsScreenContentPreview() {
                     url = "https://cdn2.thecatapi.com/images/0SxW2SQ_S.jpg",
                     breed_id = "id",
                 ),
-                isFavourite = false
+                isFavourite = false,
+                details = CatBreedDetailsEntity(
+                    origin = "origin",
+                    temperament = "temperament",
+                    description = "description",
+                    breedID = "id"
+                )
             ),
             isLoading = false,
             error = ""

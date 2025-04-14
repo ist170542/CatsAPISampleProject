@@ -3,7 +3,7 @@ package com.example.catsapisampleproject.ui.components.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
+import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImageAndDetails
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
 import com.example.catsapisampleproject.domain.useCases.GetCatBreedUseCase
 import com.example.catsapisampleproject.domain.useCases.SetCatFavouriteUseCase
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class CatDetailsUIState(
-    val breed: BreedWithImage? = null,
+    val breed: BreedWithImageAndDetails? = null,
     val isLoading: Boolean = false,
     val error: String = "",
     val favouriteOperationError: String = ""

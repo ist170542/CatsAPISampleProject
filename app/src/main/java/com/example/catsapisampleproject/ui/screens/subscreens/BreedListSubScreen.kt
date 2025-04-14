@@ -233,9 +233,6 @@ fun BreedListSubScreenContentPreview() {
                     breed = CatBreed(
                         id = "id",
                         name = "name",
-                        description = "desc",
-                        temperament = "temperament",
-                        origin = "origin",
                         referenceImageId = "refImgId",
                         minLifeSpan = 1,
                         maxLifeSpan = 2
@@ -253,9 +250,6 @@ fun BreedListSubScreenContentPreview() {
                     breed = CatBreed(
                         id = "id",
                         name = "name",
-                        description = "desc",
-                        temperament = "temperament",
-                        origin = "origin",
                         referenceImageId = "refImgId",
                         minLifeSpan = 1,
                         maxLifeSpan = 2
@@ -283,9 +277,6 @@ fun BreedListItemPreview() {
             breed = CatBreed(
                 id = "id",
                 name = "name",
-                description = "desc",
-                temperament = "temperament",
-                origin = "origin",
                 referenceImageId = "refImgId",
                 minLifeSpan = 1,
                 maxLifeSpan = 2

@@ -7,9 +7,6 @@ import androidx.room.PrimaryKey
 data class CatBreed (
     @PrimaryKey val id: String,
     val name: String,
-    val description: String,
-    val temperament: String,
-    val origin: String,
     val referenceImageId: String?,
     val minLifeSpan: Int?,
     val maxLifeSpan: Int?

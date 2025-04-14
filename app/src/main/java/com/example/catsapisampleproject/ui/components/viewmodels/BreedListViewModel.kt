@@ -26,7 +26,7 @@ data class BreedListUIState(
 )
 
 /**
- * //todo
+ * //todo rewrite comment
  *  Still not very reactive behaviour. Will try to fetch data initially, then observe DB (since when
  * a post favourite call occurs, its stored locally), so that those changes to spread the user made
  * changes to the multiple screens.
@@ -54,14 +54,13 @@ class BreedListViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             fullBreedList = result.data ?: emptyList(),
-                            filteredBreedList = result.data ?: emptyList(),
+                            filteredBreedList = filterBreeds(result.data ?: emptyList(), it.searchText),
                             isLoading = false,
                             error = StringUtils.EMPTY_STRING
                         )
                     }
                 }
 
-                //todo maybe add another Resource for Error BUT offline data provided
                 is Resource.Error -> {
                     _uiState.update {
                         it.copy(
@@ -99,7 +98,7 @@ class BreedListViewModel @Inject constructor(
                 when (result) {
                     is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
                     is Resource.Success -> {
-                        updateBreedFavouriteStatus(imageReferenceId, true)
+//                        updateBreedFavouriteStatus(imageReferenceId, true)
                         _uiState.update { it.copy(isLoading = false, error = StringUtils.EMPTY_STRING) }
                     }
                     is Resource.Error -> _uiState.update {
@@ -116,7 +115,7 @@ class BreedListViewModel @Inject constructor(
                 when (result) {
                     is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
                     is Resource.Success -> {
-                        updateBreedFavouriteStatus(imageReferenceId, false)
+//                        updateBreedFavouriteStatus(imageReferenceId, false)
                         _uiState.update { it.copy(isLoading = false, error = StringUtils.EMPTY_STRING) }
                     }
                     is Resource.Error -> _uiState.update {
