@@ -63,7 +63,7 @@ class SetCatFavouriteUseCaseTest {
     fun `emits success when operation is queued`() = runTest {
         val imageId = "img123"
 
-        coEvery { repository.deleteCatBreedAsFavourite(imageId) } returns flowOf(
+        coEvery { repository.setCatBreedAsFavourite(imageId) } returns flowOf(
             Resource.Error(ErrorType.OperationQueued)
         )
 
@@ -72,8 +72,13 @@ class SetCatFavouriteUseCaseTest {
 
             val result = awaitItem()
             assertTrue("Expected Resource.Success", result is Resource.Success)
-            assertEquals(true, (result as Resource.Success).data)
 
+            val fav = (result as Resource.Success).data
+            assertEquals(imageId, fav.imageId)
+            assertEquals(null, fav.favouriteId)
+            assertEquals(FavouriteStatus.PendingAdd, fav.status)
+
+            expectNoEvents()
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -82,17 +87,21 @@ class SetCatFavouriteUseCaseTest {
     fun `emits error when delete fails with unknown error`() = runTest {
         val imageId = "img789"
 
-        coEvery { repository.deleteCatBreedAsFavourite(imageId) } returns flowOf(
+        coEvery { repository.setCatBreedAsFavourite(imageId) } returns flowOf(
             Resource.Error(ErrorType.UnknownError)
         )
 
         useCase(imageId).test {
+            // First emission: Loading
             assertTrue(awaitItem() is Resource.Loading)
 
+            // Second emission: Error
             val result = awaitItem()
             assertTrue("Expected Resource.Error", result is Resource.Error)
             assertEquals(ErrorType.UnknownError, (result as Resource.Error).error)
 
+            // flow complete
+            expectNoEvents()
             cancelAndIgnoreRemainingEvents()
         }
     }
