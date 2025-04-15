@@ -13,29 +13,20 @@ import javax.inject.Inject
 class DeleteCatFavouriteUseCase @Inject constructor(
     private val catRepository: CatBreedsRepository
 ) {
-    operator fun invoke(
-        imageReferenceId: String
-    ): Flow<Resource<Boolean>> = flow {
+    operator fun invoke(imageReferenceId: String): Flow<Resource<Boolean>> = flow {
         emit(Resource.Loading)
-        val catBreeds = catRepository.deleteCatBreedAsFavourite(imageReferenceId = imageReferenceId)
 
-        catBreeds.collect { result ->
-            emit(result)
-
-            when (result) {
-                is Resource.Error -> {
-                    if (result.error is ErrorType.OperationQueued) {
-                        // Treat queued operations as success (UI wise is the same)
-                        emit(
-                            Resource.Success(true)
-                        )
-                    } else {
-                        emit(result)
-                    }
-                }
-
-                else -> emit(result)
+        catRepository.deleteCatBreedAsFavourite(imageReferenceId).collect { result ->
+            val mapped = when (result) {
+                is Resource.Success -> Resource.Success(true)
+                is Resource.Error ->
+                    if (result.error is ErrorType.OperationQueued)
+                        Resource.Success(true)
+                    else Resource.Error(result.error)
+                is Resource.Loading -> null // ignore duplicate loading
             }
+
+            mapped?.let { emit(it) }
         }
     }
 }

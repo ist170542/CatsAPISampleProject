@@ -6,7 +6,7 @@ import org.junit.Test
 
 class CatBreedMapperTest {
 
-    private val mapper = CatBreedMapper()
+    private val mapper = CatBreedEntityMapper
 
     @Test
     fun `maps valid dto with lifespan range`() {

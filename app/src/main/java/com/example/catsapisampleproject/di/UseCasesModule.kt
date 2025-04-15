@@ -3,7 +3,7 @@ package com.example.catsapisampleproject.di
 import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.domain.useCases.CatBreedsUseCases
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
-import com.example.catsapisampleproject.domain.useCases.GetCatBreedUseCase
+import com.example.catsapisampleproject.domain.useCases.GetCatBreedWithDetailsUseCase
 import com.example.catsapisampleproject.domain.useCases.GetCatBreedsUseCase
 import com.example.catsapisampleproject.domain.useCases.SetCatFavouriteUseCase
 import dagger.Module
@@ -23,7 +23,7 @@ object UseCasesModule {
     @Singleton
     fun provideCatBreedsUseCases(repository: CatBreedsRepository): CatBreedsUseCases {
         return CatBreedsUseCases(
-            getCatBreedUseCase = GetCatBreedUseCase(repository),
+            getCatBreedWithDetailsUseCase = GetCatBreedWithDetailsUseCase(repository),
             getBreedsUseCase = GetCatBreedsUseCase(repository),
             setCatFavouriteUseCase = SetCatFavouriteUseCase(repository),
             deleteCatFavouriteUseCase = DeleteCatFavouriteUseCase(repository)

@@ -17,7 +17,7 @@ import javax.inject.Inject
 /**
  * UseCase to get a specific breed
  */
-class GetCatBreedUseCase @Inject constructor(
+class GetCatBreedWithDetailsUseCase @Inject constructor(
     private val catRepository: CatBreedsRepository
 ) {
     operator fun invoke(breedId: String): Flow<Resource<BreedWithImageAndDetails>> = flow {

@@ -1,6 +1,9 @@
 package com.example.catsapisampleproject.dataLayer.mappers
 
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedImageEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
+import com.example.catsapisampleproject.domain.model.BreedWithImageListMapper.createBreedWithImageList
 import com.example.catsapisampleproject.domain.model.CatBreed
 import com.example.catsapisampleproject.domain.model.CatBreedImage
 import com.google.common.truth.Truth.assertThat
@@ -11,14 +14,14 @@ class CatBreedsMapperTest {
     @Test
     fun `mapper returns correct favourite flag when favourite exists`() {
         // Arrange
-        val breed = CatBreed(
+        val breed = CatBreedEntity(
             id = "1",
             name = "Abyssinian",
             referenceImageId = "img1",
             minLifeSpan = 10,
             maxLifeSpan = 15
         )
-        val image = CatBreedImage(
+        val image = CatBreedImageEntity(
             breed_id = "1",
             url = "http://example.com/abyssinian.jpg",
             image_id = "img1"
@@ -41,14 +44,14 @@ class CatBreedsMapperTest {
     @Test
     fun `mapper returns false favourite flag when no matching favourite`() {
         // Arrange
-        val breed = CatBreed(
+        val breed = CatBreedEntity(
             id = "1",
             name = "Abyssinian",
             referenceImageId = "img1",
             minLifeSpan = 10,
             maxLifeSpan = 15
         )
-        val image = CatBreedImage(
+        val image = CatBreedImageEntity(
             breed_id = "1",
             url = "http://example.com/abyssinian.jpg",
             image_id = "img1"

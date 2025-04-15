@@ -1,6 +1,6 @@
 package com.example.catsapisampleproject.dataLayer.mappers
 
-import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
+import com.example.catsapisampleproject.domain.model.BreedWithImage
 import com.example.catsapisampleproject.domain.model.CatBreed
 import org.junit.Assert.assertEquals
 import org.junit.Test

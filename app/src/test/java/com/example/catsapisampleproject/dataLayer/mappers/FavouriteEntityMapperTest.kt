@@ -6,7 +6,7 @@ import org.junit.Test
 
 class FavouriteEntityMapperTest {
 
-    private val mapper = FavouriteEntityMapper()
+    private val mapper = FavouriteEntityMapper
 
     @Test
     fun `maps valid dto correctly`() {
