@@ -84,7 +84,6 @@ class BreedFavouriteListViewModel @Inject constructor(
                 when (result) {
                     is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
                     is Resource.Success -> {
-                        removeFromFavourites(imageReferenceId)
                         _uiState.update { it.copy(isLoading = false, error = StringUtils.EMPTY_STRING) }
                     }
                     is Resource.Error -> _uiState.update {
@@ -96,19 +95,6 @@ class BreedFavouriteListViewModel @Inject constructor(
                 }
             }
             .launchIn(viewModelScope)
-    }
-
-    // Updates the favourite status in both full and filtered lists.
-    private fun removeFromFavourites(imageId: String) {
-        _uiState.update { state ->
-            val updatedList = state.favouriteList.filterNot { breedWithImage ->
-                breedWithImage.image?.image_id == imageId
-            }
-
-            state.copy(
-                favouriteList = updatedList,
-            )
-        }
     }
 
 }
