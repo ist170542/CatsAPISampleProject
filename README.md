@@ -18,8 +18,8 @@ A modern Android app showcasing clean architecture principles using Jetpack Comp
   - Bottom navigation between breed list and favorites.
   - Splash screen initializes and routes user appropriately.
 
-- 🧪 **Test Coverage**  
-  - ViewModels (limited), Use Cases, Repository, local DB and Mappers tested with `Turbine`, `MockK`, and `JUnit`.
+- 🧪 **Test Coverage** 
+  - ViewModels, Use Cases, Repository, local DB and Mappers tested with `Turbine`, `MockK`, and `JUnit`.
 
 - 📦 **Architecture**
   - MVVM + Clean Architecture.
@@ -43,12 +43,9 @@ A modern Android app showcasing clean architecture principles using Jetpack Comp
 
 <img src="https://github.com/user-attachments/assets/fdb5111a-130e-4d14-a950-44e74ab4f689" width=20% height=20%>
 
-
-<img src="https://github.com/user-attachments/assets/74852d93-278f-41fe-b370-b49771623bbe" width=20% height=20%>
-
+<img src="https://github.com/user-attachments/assets/a673305e-dd3e-4c30-b97a-9976dc31c467" width=20% height=20%>
 
 <img src="https://github.com/user-attachments/assets/2109fc58-49b9-4d94-bab9-2a160641ca60" width=20% height=20%>
-
 
 <img src="https://github.com/user-attachments/assets/bf14430f-6eb8-4f48-a621-25580d33d428" width=20% height=20%>
 
@@ -100,3 +97,7 @@ com.example.catsapisampleproject/
 
 - **Single Source of Truth**  
   The local Room database acts as the single source of truth. Even data received from the remote API is first cached before being exposed to the UI. This approach promotes consistency, offline capabilities, and easier testing.
+
+### 🛠️ Limitations
+
+- While the project features a strong separation of concerns and supports reactive state management via Kotlin Flows, testing remains a work in progress. I'm currently expanding my understanding of best practices for testing modern components such as Flow, StateFlow, and handling asynchronous data streams (e.g., with Turbine). Some test coverage is present and functioning correctly, but further robustness, especially for edge cases and error propagation, is something I'm actively improving.
