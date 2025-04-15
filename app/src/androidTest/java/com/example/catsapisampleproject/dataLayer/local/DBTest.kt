@@ -6,10 +6,10 @@ import androidx.test.core.app.ApplicationProvider
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedDetailsEntity
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedImageEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.PendingOperation
-import com.example.catsapisampleproject.domain.model.CatBreed
-import com.example.catsapisampleproject.domain.model.CatBreedImage
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import com.google.common.truth.Truth.assertThat
@@ -89,7 +89,7 @@ class DaosTest {
     @Test
     fun insertAndRetrieveCatBreedImage() = runBlocking {
         // Arrange
-        val image = CatBreedImage(
+        val image = CatBreedImageEntity(
             breed_id = "breed1",
             image_id = "img1",
             url = "http://example.com/image.jpg"
@@ -106,8 +106,8 @@ class DaosTest {
     @Test
     fun getAllCatBreedImagesReturnsList() = runBlocking {
         // Arrange
-        val image1 = CatBreedImage(breed_id = "breed1", image_id = "img1", url = "http://example.com/img1.jpg")
-        val image2 = CatBreedImage(breed_id = "breed2", image_id = "img2", url = "http://example.com/img2.jpg")
+        val image1 = CatBreedImageEntity(breed_id = "breed1", image_id = "img1", url = "http://example.com/img1.jpg")
+        val image2 = CatBreedImageEntity(breed_id = "breed2", image_id = "img2", url = "http://example.com/img2.jpg")
         catBreedImagesDao.insertCatBreedImages(listOf(image1, image2))
         // Act
         val allImages = catBreedImagesDao.getAllCatBreedImages()
@@ -120,7 +120,7 @@ class DaosTest {
     @Test
     fun insertAndRetrieveCatBreed() = runBlocking {
         // Arrange
-        val breed = CatBreed(
+        val breed = CatBreedEntity(
             id = "breed1",
             name = "Siamese",
             referenceImageId = "img1",
@@ -138,14 +138,14 @@ class DaosTest {
     @Test
     fun getAllCatBreedsReturnsList() = runBlocking {
         // Arrange
-        val breed1 = CatBreed(
+        val breed1 = CatBreedEntity(
             id = "breed1",
             name = "Siamese",
             referenceImageId = "img1",
             minLifeSpan = 12,
             maxLifeSpan = 20
         )
-        val breed2 = CatBreed(
+        val breed2 = CatBreedEntity(
             id = "breed2",
             name = "Persian",
             referenceImageId = "img2",
