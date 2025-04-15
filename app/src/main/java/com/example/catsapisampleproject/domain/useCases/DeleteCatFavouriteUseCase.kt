@@ -16,26 +16,26 @@ class DeleteCatFavouriteUseCase @Inject constructor(
     operator fun invoke(
         imageReferenceId: String
     ): Flow<Resource<Boolean>> = flow {
-            emit(Resource.Loading)
-            val catBreeds = catRepository.deleteCatBreedAsFavourite(imageReferenceId = imageReferenceId)
+        emit(Resource.Loading)
+        val catBreeds = catRepository.deleteCatBreedAsFavourite(imageReferenceId = imageReferenceId)
 
-            catBreeds.collect {
-                    result -> emit(result)
+        catBreeds.collect { result ->
+            emit(result)
 
-                    when (result) {
-                        is Resource.Error -> {
-                            if (result.error is ErrorType.OperationQueued) {
-                                // Treat queued operations as success (UI wise is the same)
-                                emit(
-                                    Resource.Success(true)
-                                )
-                            } else {
-                                emit(result)
-                            }
-                        }
-
-                        else -> emit(result)
+            when (result) {
+                is Resource.Error -> {
+                    if (result.error is ErrorType.OperationQueued) {
+                        // Treat queued operations as success (UI wise is the same)
+                        emit(
+                            Resource.Success(true)
+                        )
+                    } else {
+                        emit(result)
                     }
                 }
+
+                else -> emit(result)
             }
+        }
     }
+}

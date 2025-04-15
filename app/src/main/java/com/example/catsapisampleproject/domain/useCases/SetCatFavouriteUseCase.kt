@@ -1,8 +1,9 @@
 package com.example.catsapisampleproject.domain.useCases
 
-import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
-import com.example.catsapisampleproject.dataLayer.local.entities.PendingOperation
 import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
+import com.example.catsapisampleproject.domain.mappers.FavouriteMapper
+import com.example.catsapisampleproject.domain.model.Favourite
+import com.example.catsapisampleproject.domain.model.FavouriteStatus
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -13,34 +14,31 @@ import javax.inject.Inject
  * UseCase to set a cat breed as favourite
  */
 class SetCatFavouriteUseCase @Inject constructor(
-    private val catRepository: CatBreedsRepository
+    private val repository: CatBreedsRepository
 ) {
-    operator fun invoke(
-        imageReferenceId: String
-    ): Flow<Resource<FavouriteEntity>> = flow {
+    operator fun invoke(imageReferenceId: String): Flow<Resource<Favourite>> = flow {
         emit(Resource.Loading)
-        val catBreeds = catRepository.setCatBreedAsFavourite(imageReferenceId)
 
-        catBreeds.collect { result ->
+        repository.setCatBreedAsFavourite(imageReferenceId).collect { result ->
             when (result) {
+                is Resource.Success -> emit(Resource.Success(FavouriteMapper.fromEntity(result.data)))
                 is Resource.Error -> {
                     if (result.error is ErrorType.OperationQueued) {
-                        // Treat queued operations as success (UI wise is the same)
                         emit(
                             Resource.Success(
-                                FavouriteEntity(
+                                Favourite(
                                     imageId = imageReferenceId,
-                                    pendingOperation = PendingOperation.Add,
-                                    favouriteId = null
+                                    favouriteId = null,
+                                    status = FavouriteStatus.PendingAdd
                                 )
                             )
                         )
                     } else {
-                        emit(result)
+                        emit(Resource.Error(result.error))
                     }
                 }
 
-                else -> emit(result)
+                is Resource.Loading -> emit(Resource.Loading)
             }
         }
     }

@@ -4,7 +4,8 @@ import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImageAndDetails
+import com.example.catsapisampleproject.R
+import com.example.catsapisampleproject.domain.model.BreedWithImageAndDetails
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
 import com.example.catsapisampleproject.domain.useCases.GetCatBreedUseCase
 import com.example.catsapisampleproject.domain.useCases.SetCatFavouriteUseCase
@@ -30,7 +31,7 @@ data class CatDetailsUIState(
 
 @HiltViewModel
 class CatViewDetailsViewModel @Inject constructor(
-    savedStateHandle : SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val getCatBreedDetailsUseCase: GetCatBreedUseCase,
     private val setCatFavouriteUseCase: SetCatFavouriteUseCase,
     private val deleteCatFavouriteUseCase: DeleteCatFavouriteUseCase,
@@ -47,7 +48,10 @@ class CatViewDetailsViewModel @Inject constructor(
         if (breedId != null) {
             loadBreedDetails(breedId)
         } else {
-            _uiState.value = CatDetailsUIState(isLoading = false, error = "Breed ID missing")
+            _uiState.value = CatDetailsUIState(
+                isLoading = false,
+                error = context.getString(R.string.error_missing_breed_id)
+            )
         }
     }
 
@@ -63,6 +67,7 @@ class CatViewDetailsViewModel @Inject constructor(
                         )
                     }
                 }
+
                 is Resource.Error -> {
                     _uiState.update {
                         it.copy(
@@ -71,6 +76,7 @@ class CatViewDetailsViewModel @Inject constructor(
                         )
                     }
                 }
+
                 is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
             }
         }.launchIn(viewModelScope)
@@ -80,7 +86,7 @@ class CatViewDetailsViewModel @Inject constructor(
     fun toggleFavourite() {
         viewModelScope.launch {
             val currentState = _uiState.value
-            val refId = currentState.breed?.image?.image_id ?: return@launch
+            val refId = currentState.breed?.image?.imageId ?: return@launch
 
             if (currentState.breed.isFavourite) {
                 // Remove favourite.
@@ -90,7 +96,9 @@ class CatViewDetailsViewModel @Inject constructor(
                             is Resource.Error -> {
                                 _uiState.update {
                                     it.copy(
-                                        favouriteOperationError = StringMapper(context).getErrorString(result.error),
+                                        favouriteOperationError = StringMapper(context).getErrorString(
+                                            result.error
+                                        ),
                                         isLoading = false
                                     )
                                 }
@@ -117,7 +125,9 @@ class CatViewDetailsViewModel @Inject constructor(
                             is Resource.Error -> {
                                 _uiState.update {
                                     it.copy(
-                                        favouriteOperationError = StringMapper(context).getErrorString(result.error),
+                                        favouriteOperationError = StringMapper(context).getErrorString(
+                                            result.error
+                                        ),
                                         isLoading = false
                                     )
                                 }

@@ -1,11 +1,11 @@
 package com.example.catsapisampleproject.dataLayer.mappers
 
 import com.example.catsapisampleproject.dataLayer.dto.responses.BreedDTO
-import com.example.catsapisampleproject.domain.model.CatBreed
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
 
-class CatBreedMapper {
+object CatBreedEntityMapper {
 
-    fun fromDto(dto: BreedDTO): CatBreed {
+    fun fromDto(dto: BreedDTO): CatBreedEntity {
         val parts = dto.lifeSpan.split(" - ")
         val minLifeSpan = if (parts.size == 2) {
             parts[0].trim().toIntOrNull()
@@ -18,7 +18,7 @@ class CatBreedMapper {
             null
         }
 
-        return CatBreed(
+        return CatBreedEntity(
             id = dto.id,
             name = dto.name,
             referenceImageId = dto.referenceImageId,

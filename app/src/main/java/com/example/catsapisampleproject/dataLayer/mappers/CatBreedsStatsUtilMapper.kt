@@ -1,6 +1,6 @@
 package com.example.catsapisampleproject.dataLayer.mappers
 
-import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
+import com.example.catsapisampleproject.domain.model.BreedWithImage
 
 object CatBreedsStatsUtilMapper {
     fun computeAverageMinLifeSpan(breeds: List<BreedWithImage>): Double? {

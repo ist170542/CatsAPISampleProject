@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.catsapisampleproject.dataLayer.mappers.CatBreedsStatsUtilMapper.computeAverageMinLifeSpan
-import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
+import com.example.catsapisampleproject.domain.model.BreedWithImage
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
 import com.example.catsapisampleproject.domain.useCases.GetCatBreedsUseCase
 import com.example.catsapisampleproject.util.Resource
@@ -45,9 +45,12 @@ class BreedFavouriteListViewModel @Inject constructor(
             when (result) {
                 // filter favourite items
                 is Resource.Error -> _uiState.update {
-                    it.copy(error = StringMapper(context = context).getErrorString(result.error),
-                        isLoading = false)
+                    it.copy(
+                        error = StringMapper(context = context).getErrorString(result.error),
+                        isLoading = false
+                    )
                 }
+
                 is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
                 is Resource.Success -> {
                     // filter favourite items
@@ -84,13 +87,20 @@ class BreedFavouriteListViewModel @Inject constructor(
                 when (result) {
                     is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
                     is Resource.Success -> {
-                        _uiState.update { it.copy(isLoading = false, error = StringUtils.EMPTY_STRING) }
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                error = StringUtils.EMPTY_STRING
+                            )
+                        }
                     }
+
                     is Resource.Error -> _uiState.update {
                         it.copy(
                             isLoading = false,
                             error = StringMapper(context = context)
-                            .getErrorString(result.error))
+                                .getErrorString(result.error)
+                        )
                     }
                 }
             }

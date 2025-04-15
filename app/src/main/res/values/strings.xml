@@ -21,7 +21,7 @@
     <string name="origin">Origin</string>
 
     <!-- Breed List Screen -->
-    <string name="search_placeholder">Type breed name to search...</string>
+    <string name="search_placeholder">Type breed name to search…</string>
 
     <!-- Favorites Screen -->
     <string name="favourite_breeds">Favourite breeds</string>
@@ -34,5 +34,6 @@
 
     <!-- Splash Screen -->
     <string name="retry">Retry</string>
+    <string name="using_offline_Data">Using offline data</string>
 
 </resources>

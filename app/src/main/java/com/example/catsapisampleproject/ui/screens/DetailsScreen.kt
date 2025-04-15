@@ -33,9 +33,9 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.example.catsapisampleproject.R
-import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedDetailsEntity
-import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImageAndDetails
+import com.example.catsapisampleproject.domain.model.BreedWithImageAndDetails
 import com.example.catsapisampleproject.domain.model.CatBreed
+import com.example.catsapisampleproject.domain.model.CatBreedDetails
 import com.example.catsapisampleproject.domain.model.CatBreedImage
 import com.example.catsapisampleproject.ui.components.viewmodels.CatDetailsUIState
 import com.example.catsapisampleproject.ui.components.viewmodels.CatViewDetailsViewModel
@@ -84,8 +84,9 @@ fun CatDetailsScreenContent(
         Scaffold(
             topBar = {
                 uiState.breed?.let { breed ->
-                    TopAppBar(title = { Text(breed.breed.name) } )
-                } },
+                    TopAppBar(title = { Text(breed.breed.name) })
+                }
+            },
             floatingActionButton = {
                 if (uiState.error.isEmpty()) {
                     uiState.breed?.let { breed ->
@@ -159,15 +160,15 @@ fun CatDetailsScreenContent(
 }
 
 
-
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun BreedContent(
-    breed: BreedWithImageAndDetails) {
-    Column (
+    breed: BreedWithImageAndDetails
+) {
+    Column(
         modifier = Modifier
             .padding(16.dp)
-    ){
+    ) {
 
         GlideImage(
             modifier = Modifier
@@ -292,16 +293,16 @@ fun CatDetailsScreenContentPreview() {
                     maxLifeSpan = 1
                 ),
                 image = CatBreedImage(
-                    image_id = "AAAAA",
+                    imageId = "AAAAA",
                     url = "https://cdn2.thecatapi.com/images/0SxW2SQ_S.jpg",
-                    breed_id = "id",
+                    breedId = "id",
                 ),
                 isFavourite = false,
-                details = CatBreedDetailsEntity(
+                details = CatBreedDetails(
                     origin = "origin",
                     temperament = "temperament",
                     description = "description",
-                    breedID = "id"
+                    breedId = "id"
                 )
             ),
             isLoading = false,

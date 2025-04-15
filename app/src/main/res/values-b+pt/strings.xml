@@ -34,5 +34,6 @@
 
     <!-- Splash Screen -->
     <string name="retry">Tentar novamente</string>
+    <string name="using_offline_Data">A usar dados offline</string>
 
 </resources>

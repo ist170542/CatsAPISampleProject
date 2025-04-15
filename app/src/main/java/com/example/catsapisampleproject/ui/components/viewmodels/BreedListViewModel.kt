@@ -3,7 +3,7 @@ package com.example.catsapisampleproject.ui.components.viewmodels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
+import com.example.catsapisampleproject.domain.model.BreedWithImage
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
 import com.example.catsapisampleproject.domain.useCases.GetCatBreedsUseCase
 import com.example.catsapisampleproject.domain.useCases.SetCatFavouriteUseCase
@@ -58,7 +58,10 @@ class BreedListViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             fullBreedList = result.data ?: emptyList(),
-                            filteredBreedList = filterBreeds(result.data ?: emptyList(), it.searchText),
+                            filteredBreedList = filterBreeds(
+                                result.data ?: emptyList(),
+                                it.searchText
+                            ),
                             isLoading = false,
                             error = StringUtils.EMPTY_STRING
                         )
@@ -102,10 +105,19 @@ class BreedListViewModel @Inject constructor(
                 when (result) {
                     is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
                     is Resource.Success -> {
-                        _uiState.update { it.copy(isLoading = false, error = StringUtils.EMPTY_STRING) }
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                error = StringUtils.EMPTY_STRING
+                            )
+                        }
                     }
+
                     is Resource.Error -> _uiState.update {
-                        it.copy(isLoading = false, error = StringMapper(context).getErrorString(result.error))
+                        it.copy(
+                            isLoading = false,
+                            error = StringMapper(context).getErrorString(result.error)
+                        )
                     }
                 }
             }
@@ -119,32 +131,23 @@ class BreedListViewModel @Inject constructor(
                     is Resource.Loading -> _uiState.update { it.copy(isLoading = true) }
                     is Resource.Success -> {
 //                        updateBreedFavouriteStatus(imageReferenceId, false)
-                        _uiState.update { it.copy(isLoading = false, error = StringUtils.EMPTY_STRING) }
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                error = StringUtils.EMPTY_STRING
+                            )
+                        }
                     }
+
                     is Resource.Error -> _uiState.update {
-                        it.copy(isLoading = false, error = StringMapper(context).getErrorString(result.error))
+                        it.copy(
+                            isLoading = false,
+                            error = StringMapper(context).getErrorString(result.error)
+                        )
                     }
                 }
             }
             .launchIn(viewModelScope)
-    }
-
-    // Updates the favourite status in both full and filtered lists.
-    private fun updateBreedFavouriteStatus(imageId: String, isFavourite: Boolean) {
-        _uiState.update { state ->
-            val updateList: (List<BreedWithImage>) -> List<BreedWithImage> = { list ->
-                list.map { breedWithImage ->
-                    if (breedWithImage.image?.image_id == imageId) {
-                        breedWithImage.copy(isFavourite = isFavourite)
-                    } else breedWithImage
-                }
-            }
-
-            state.copy(
-                fullBreedList = updateList(state.fullBreedList),
-                filteredBreedList = updateList(state.filteredBreedList)
-            )
-        }
     }
 
     // This function updates the search text and the filtered breed list based on the search text
@@ -158,7 +161,7 @@ class BreedListViewModel @Inject constructor(
     }
 
     private fun filterBreeds(breeds: List<BreedWithImage>, query: String): List<BreedWithImage> {
-        return breeds.filter { it.breed.name.contains(query, ignoreCase = true) }
+        return breeds.filter { it.breed.name.startsWith(query, ignoreCase = true) }
     }
 
 }

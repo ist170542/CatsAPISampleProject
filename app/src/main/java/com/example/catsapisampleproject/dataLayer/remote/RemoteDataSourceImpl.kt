@@ -28,7 +28,7 @@ class RemoteDataSourceImpl @Inject constructor(
         val response = catApiService.getCatBreedImageByReferenceImageId(imageID = referenceImageId)
 
         if (response.isSuccessful) {
-            return response.body() ?: throw Exception("Empty response body - TODO")
+            return response.body() ?: throw Exception("Empty response body")
         } else {
             throw HttpException(response)
         }

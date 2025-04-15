@@ -1,21 +1,21 @@
 package com.example.catsapisampleproject.dataLayer.local
 
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedDetailsEntity
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedImageEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
-import com.example.catsapisampleproject.domain.model.CatBreed
-import com.example.catsapisampleproject.domain.model.CatBreedImage
 import kotlinx.coroutines.flow.Flow
 
 interface LocalDataSource {
     //cat breeds
-    suspend fun getCatBreeds(): List<CatBreed>
-    suspend fun getCatBreedById(breedId: String): CatBreed?
-    suspend fun insertCatBreeds(catBreeds: List<CatBreed>)
+    suspend fun getCatBreeds(): List<CatBreedEntity>
+    suspend fun getCatBreedById(breedId: String): CatBreedEntity?
+    suspend fun insertCatBreeds(catBreeds: List<CatBreedEntity>)
 
     //cat breed images
-    suspend fun getCatBreedImages() : List<CatBreedImage>?
-    suspend fun getCatBreedImageByBreedId(breedId: String): CatBreedImage?
-    suspend fun insertCatBreedImages(catBreedImages: List<CatBreedImage>)
+    suspend fun getCatBreedImages(): List<CatBreedImageEntity>?
+    suspend fun getCatBreedImageByBreedId(breedId: String): CatBreedImageEntity?
+    suspend fun insertCatBreedImages(catBreedImages: List<CatBreedImageEntity>)
 
     //favourites
     suspend fun getFavouriteCatBreeds(): List<FavouriteEntity>

@@ -25,7 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.catsapisampleproject.R
-import com.example.catsapisampleproject.dataLayer.repositories.BreedWithImage
+import com.example.catsapisampleproject.domain.model.BreedWithImage
 import com.example.catsapisampleproject.domain.model.CatBreed
 import com.example.catsapisampleproject.domain.model.CatBreedImage
 import com.example.catsapisampleproject.ui.components.viewmodels.BreedListUIState
@@ -64,51 +64,51 @@ fun BreedListSubScreenContent(
 
     var expanded by remember { mutableStateOf(false) }
 
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Column(
+            SearchBar(
+                inputField = {
+                    SearchBarDefaults.InputField(
+                        query = uiState.searchText,
+                        onSearch = { expanded = false },
+                        expanded = expanded,
+                        onExpandedChange = { expanded = it },
+                        placeholder = { Text(stringResource(R.string.search_placeholder)) },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                        onQueryChange = onSearchTextChange
+                    )
+                },
+                expanded = false,
+                onExpandedChange = { expanded = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                content = {}
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            CatBreedList(
+                breedList = uiState.filteredBreedList,
+                onClickedFavouriteButton = onClickedFavouriteButton,
+                onClickedCard = onClickedCard
+            )
+
+        }
+
+        if (uiState.isLoading) {
+            FullScreenLoadingOverlay(
                 modifier = Modifier
                     .fillMaxSize()
-            ) {
-                SearchBar(
-                    inputField = {
-                        SearchBarDefaults.InputField(
-                            query = uiState.searchText,
-                            onSearch = { expanded = false },
-                            expanded = expanded,
-                            onExpandedChange = { expanded  = it },
-                            placeholder = { Text(stringResource(R.string.search_placeholder)) },
-                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                            onQueryChange = onSearchTextChange
-                        )
-                    },
-                    expanded = false,
-                    onExpandedChange = { expanded = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    content = {}
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                CatBreedList(
-                    breedList = uiState.filteredBreedList,
-                    onClickedFavouriteButton = onClickedFavouriteButton,
-                    onClickedCard = onClickedCard
-                )
-
-            }
-
-            if (uiState.isLoading) {
-                FullScreenLoadingOverlay(
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
-            }
+            )
         }
+    }
 }
 
 
@@ -129,9 +129,9 @@ fun BreedListSubScreenContentPreview() {
                         maxLifeSpan = 2
                     ),
                     image = CatBreedImage(
-                        image_id = "",
+                        imageId = "",
                         url = "https://cdn2.thecatapi.com/images/0SxW2SQ_S.jpg",
-                        breed_id = "id",
+                        breedId = "id",
                     ),
                     isFavourite = true
                 )
@@ -146,9 +146,9 @@ fun BreedListSubScreenContentPreview() {
                         maxLifeSpan = 2
                     ),
                     image = CatBreedImage(
-                        image_id = "",
+                        imageId = "",
                         url = "https://cdn2.thecatapi.com/images/0SxW2SQ_S.jpg",
-                        breed_id = "id",
+                        breedId = "id",
                     ),
                     isFavourite = true
                 )
@@ -173,9 +173,9 @@ fun BreedListItemPreview() {
                 maxLifeSpan = 2
             ),
             image = CatBreedImage(
-                image_id = "",
+                imageId = "",
                 url = "https://cdn2.thecatapi.com/images/0SxW2SQ_S.jpg",
-                breed_id = "id",
+                breedId = "id",
             ),
             isFavourite = true
         ),

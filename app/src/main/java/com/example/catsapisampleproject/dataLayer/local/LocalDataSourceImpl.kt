@@ -1,9 +1,9 @@
 package com.example.catsapisampleproject.dataLayer.local
 
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedDetailsEntity
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
+import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedImageEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
-import com.example.catsapisampleproject.domain.model.CatBreed
-import com.example.catsapisampleproject.domain.model.CatBreedImage
 import kotlinx.coroutines.flow.Flow
 
 class LocalDataSourceImpl(
@@ -13,27 +13,27 @@ class LocalDataSourceImpl(
     private val catBreedDetailsDao: CatBreedDetailsDao
 ) : LocalDataSource {
 
-    override suspend fun getCatBreeds(): List<CatBreed> {
+    override suspend fun getCatBreeds(): List<CatBreedEntity> {
         return catBreedsDao.getAllCatBreeds()
     }
 
-    override suspend fun getCatBreedById(breedId: String): CatBreed? {
+    override suspend fun getCatBreedById(breedId: String): CatBreedEntity? {
         return catBreedsDao.getCatBreedById(breedId)
     }
 
-    override suspend fun insertCatBreeds(catBreeds: List<CatBreed>) {
+    override suspend fun insertCatBreeds(catBreeds: List<CatBreedEntity>) {
         catBreedsDao.insertCatBreeds(catBreeds)
     }
 
-    override suspend fun getCatBreedImages(): List<CatBreedImage>? {
+    override suspend fun getCatBreedImages(): List<CatBreedImageEntity>? {
         return catBreedImagesDao.getAllCatBreedImages()
     }
 
-    override suspend fun getCatBreedImageByBreedId(breedId: String): CatBreedImage? {
+    override suspend fun getCatBreedImageByBreedId(breedId: String): CatBreedImageEntity? {
         return catBreedImagesDao.getCatBreedImageByBreedId(breedId)
     }
 
-    override suspend fun insertCatBreedImages(catBreedImages: List<CatBreedImage>) {
+    override suspend fun insertCatBreedImages(catBreedImages: List<CatBreedImageEntity>) {
         catBreedImagesDao.insertCatBreedImages(catBreedImages)
     }
 
