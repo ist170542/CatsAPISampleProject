@@ -7,8 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.catsapisampleproject.R
 import com.example.catsapisampleproject.domain.model.BreedWithImageAndDetails
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
-import com.example.catsapisampleproject.domain.useCases.GetCatBreedUseCase
+import com.example.catsapisampleproject.domain.useCases.GetCatBreedWithDetailsUseCase
 import com.example.catsapisampleproject.domain.useCases.SetCatFavouriteUseCase
+import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
 import com.example.catsapisampleproject.util.StringMapper
 import com.example.catsapisampleproject.util.StringUtils
@@ -32,7 +33,7 @@ data class CatDetailsUIState(
 @HiltViewModel
 class CatViewDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getCatBreedDetailsUseCase: GetCatBreedUseCase,
+    private val getCatBreedDetailsUseCase: GetCatBreedWithDetailsUseCase,
     private val setCatFavouriteUseCase: SetCatFavouriteUseCase,
     private val deleteCatFavouriteUseCase: DeleteCatFavouriteUseCase,
     @ApplicationContext private val context: Context,
@@ -50,7 +51,7 @@ class CatViewDetailsViewModel @Inject constructor(
         } else {
             _uiState.value = CatDetailsUIState(
                 isLoading = false,
-                error = context.getString(R.string.error_missing_breed_id)
+                error = StringMapper(context).getErrorString(ErrorType.MissingBreedId)
             )
         }
     }
