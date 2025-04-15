@@ -70,12 +70,6 @@ fun FavouriteBreedListSubScreen(
                             }
                         }
 
-                        Text(modifier = Modifier.padding(16.dp),
-                            text = stringResource
-                                (R.string.average_min_life_span,
-                                uiState.averageMinLifeSpan.toString())
-                        )
-
                         Text(
                             text = "Average min life span: ${uiState.averageMinLifeSpan}",
                             modifier = Modifier.padding(16.dp)
