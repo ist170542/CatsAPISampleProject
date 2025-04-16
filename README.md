@@ -101,3 +101,23 @@ com.example.catsapisampleproject/
 ### 🛠️ Limitations
 
 - While the project features a strong separation of concerns and supports reactive state management via Kotlin Flows, testing remains a work in progress. I'm currently expanding my understanding of best practices for testing modern components such as Flow, StateFlow, and handling asynchronous data streams (e.g., with Turbine). Some test coverage is present and functioning correctly, but further robustness, especially for edge cases and error propagation, is something I'm actively improving.
+
+
+## 🧪 Pagination (Alternative Implementation)
+
+> 📍 Branch: `pagination-alternative`
+
+This branch adds a **"Cat Images" tab** that demonstrates pagination using Jetpack Paging 3 and TheCatAPI's `/images/search` endpoint. Unlike the main breed list, this screen focuses on infinite scroll rather than search or offline access.
+
+### ✅ Highlights
+- Jetpack Paging 3 integrated with `MVVM + Room + Compose`.
+- Favourites toggle supported and synced with the local database.
+- ViewModel handles all logic; UI remains “blind” and reactive.
+- Clean `UIState` structure, consistent with the rest of the app.
+
+### ⚠️ Considerations
+- No search/filtering (API does not support it).
+- Only images with breed metadata allow navigation to the detail screen.
+- This tab is not test-covered — it serves as a structural example, not a production-ready feature.
+
+The `pagination-alternative` branch demonstrates that the absence of pagination in the main flow was not an oversight, but a deliberate design decision based on the project’s functional requirements. The images tab offers a complementary pattern, showing that pagination is fully compatible with the app’s architecture.
