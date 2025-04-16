@@ -5,6 +5,7 @@ import com.example.catsapisampleproject.dataLayer.dto.responses.BreedDTO
 import com.example.catsapisampleproject.dataLayer.dto.responses.FavouriteDTO
 import com.example.catsapisampleproject.dataLayer.dto.requests.FavouriteRequestDTO
 import com.example.catsapisampleproject.dataLayer.dto.responses.ImageDTO
+import com.example.catsapisampleproject.dataLayer.dto.responses.ImageSearchDTO
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -13,6 +14,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface CatAPIService {
 
@@ -43,5 +45,14 @@ interface CatAPIService {
         @Header("x-api-key") apiKey: String = BuildConfig.CAT_API_KEY,
         @Path("favouriteid") favouriteID: String
     ): Response<ResponseBody>
+
+    @GET("images/search")
+    suspend fun getCatImagesPaginated(
+        @Header("x-api-key") apiKey: String = BuildConfig.CAT_API_KEY,
+        @Query("limit") limit: Int,
+        @Query("page") page: Int,
+        @Query("order") order: String = "DESC",
+        @Query("size") size: String = "small"
+    ): Response<List<ImageSearchDTO>>
 
 }

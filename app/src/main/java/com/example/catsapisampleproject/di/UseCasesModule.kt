@@ -26,7 +26,7 @@ object UseCasesModule {
             getCatBreedWithDetailsUseCase = GetCatBreedWithDetailsUseCase(repository),
             getBreedsUseCase = GetCatBreedsUseCase(repository),
             setCatFavouriteUseCase = SetCatFavouriteUseCase(repository),
-            deleteCatFavouriteUseCase = DeleteCatFavouriteUseCase(repository)
+            deleteCatFavouriteUseCase = DeleteCatFavouriteUseCase(repository),
         )
     }
 

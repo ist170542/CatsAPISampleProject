@@ -95,24 +95,26 @@ fun CatBreedGridItem(
                     contentDescription = breedWithImage.breed.name
                 )
 
-                // Breed name below the image
-                Text(
-                    text = breedWithImage.breed.name,
-                    style = MaterialTheme.typography.bodyLarge,
-                    maxLines = 2,
-                    textAlign = TextAlign.Center,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
-                )
+                if(breedWithImage.breed.name.isNotEmpty()) {
+                    // Breed name below the image
+                    Text(
+                        text = breedWithImage.breed.name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        maxLines = 2,
+                        textAlign = TextAlign.Center,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                    )
+                }
             }
 
             // Favorite icon in the top-right
             IconButton(
                 onClick = {
                     onClickedFavouriteButton(
-                        breedWithImage.breed.referenceImageId,
+                        breedWithImage.image?.imageId,
                         breedWithImage.isFavourite
                     )
                 },

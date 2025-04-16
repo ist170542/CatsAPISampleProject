@@ -4,6 +4,7 @@ import com.example.catsapisampleproject.dataLayer.dto.responses.BreedDTO
 import com.example.catsapisampleproject.dataLayer.dto.responses.FavouriteDTO
 import com.example.catsapisampleproject.dataLayer.dto.requests.FavouriteRequestDTO
 import com.example.catsapisampleproject.dataLayer.dto.responses.ImageDTO
+import com.example.catsapisampleproject.dataLayer.dto.responses.ImageSearchDTO
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -61,5 +62,14 @@ class RemoteDataSourceImpl @Inject constructor(
         val response = catApiService.deleteCatBreedAsFavourite(favouriteID = favouriteId)
 
         return response.isSuccessful
+    }
+
+    override suspend fun getCatImagesPaginated(limit: Int, page: Int): List<ImageSearchDTO> {
+        val response = catApiService.getCatImagesPaginated(limit = limit, page = page)
+        if (response.isSuccessful) {
+            return response.body() ?: emptyList()
+        } else {
+            throw HttpException(response)
+        }
     }
 }

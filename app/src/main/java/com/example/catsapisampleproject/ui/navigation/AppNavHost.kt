@@ -45,6 +45,11 @@ fun AppNavHost(
             composable(BottomNavScreen.FAVORITES.name) {
                 MainScreen(navController = navController)
             }
+
+            // Images screen
+            composable(BottomNavScreen.IMAGES.name) {
+                MainScreen(navController = navController)
+            }
         }
 
         // Details screen (outside the bottom navigation)

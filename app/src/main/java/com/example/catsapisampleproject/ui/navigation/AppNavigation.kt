@@ -9,7 +9,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 // Define the screens for the bottom navigation
 enum class BottomNavScreen {
     LIST,
-    FAVORITES
+    FAVORITES,
+    IMAGES
 }
 
 // Define the screens for the entire app

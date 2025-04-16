@@ -1,6 +1,7 @@
 package com.example.catsapisampleproject.ui.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Icon
@@ -28,6 +29,11 @@ fun BottomNavigationBar(navController: NavHostController) {
             label = "Favorites",
             icon = Icons.Filled.Favorite,
             route = BottomNavScreen.FAVORITES.name
+        ),
+        BottomNavigationItem(
+            label = "Images",
+            icon = Icons.Filled.Face,
+            route = BottomNavScreen.IMAGES.name
         )
     )
 

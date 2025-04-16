@@ -23,7 +23,6 @@ import com.example.catsapisampleproject.ui.components.viewmodels.FavouriteListUI
 import com.example.catsapisampleproject.ui.misc.FullScreenLoadingOverlay
 import com.example.catsapisampleproject.ui.screens.subscreens.common.CatBreedGridItem
 
-//todo: increase reusability from the list cat breeds viewModel. Also a little for the composable
 @Composable
 fun FavouriteBreedListSubScreen(
     viewModel: BreedFavouriteListViewModel,

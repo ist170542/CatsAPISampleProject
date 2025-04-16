@@ -1,7 +1,14 @@
 package com.example.catsapisampleproject.dataLayer.repositories
 
+import android.util.Log
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.example.catsapisampleproject.dataLayer.dto.responses.BreedDTO
 import com.example.catsapisampleproject.dataLayer.dto.responses.FavouriteDTO
+import com.example.catsapisampleproject.dataLayer.dto.responses.ImageSearchDTO
 import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedDetailsEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
@@ -118,8 +125,7 @@ constructor(
                                 image_id = imageId
                             )
                         } catch (e: Exception) {
-                            //Log.w(TAG, "Failed to fetch image $imageId", e)
-                            // failed for this image, silent fail
+                            Log.w(TAG, "Failed to fetch image $imageId", e)
                             null
                         }
                     }
@@ -357,5 +363,44 @@ constructor(
 
     override fun observeFavouriteByImageId(imageId: String): Flow<FavouriteEntity?> {
         return localDataSource.observeFavouriteByImageId(imageId)
+    }
+
+    override fun observeCatImagesPaginated(): Flow<PagingData<ImageSearchDTO>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = { CatImagesPagingSource(remoteDataSource) }
+        ).flow
+    }
+
+    override fun observeFavouriteCatBreeds(): Flow<List<FavouriteEntity>> {
+        return localDataSource.observeFavouriteCatBreeds()
+    }
+}
+
+private class CatImagesPagingSource(
+    private val remoteDataSource: RemoteDataSource
+) : PagingSource<Int, ImageSearchDTO>() {
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ImageSearchDTO> {
+        return try {
+            val page = params.key ?: 0
+            val limit = params.loadSize
+            val images = remoteDataSource.getCatImagesPaginated(limit, page)
+
+            LoadResult.Page(
+                data = images,
+                prevKey = if (page == 0) null else page - 1,
+                nextKey = if (images.isEmpty()) null else page + 1
+            )
+        } catch (e: Exception) {
+            LoadResult.Error(e)
+        }
+    }
+
+    override fun getRefreshKey(state: PagingState<Int, ImageSearchDTO>): Int? {
+        return state.anchorPosition?.let { anchor ->
+            val page = state.closestPageToPosition(anchor)
+            page?.prevKey?.plus(1) ?: page?.nextKey?.minus(1)
+        }
     }
 }

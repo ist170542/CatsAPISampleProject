@@ -16,6 +16,7 @@ import com.example.catsapisampleproject.ui.navigation.BottomNavScreen
 import com.example.catsapisampleproject.ui.navigation.BottomNavigationBar
 import com.example.catsapisampleproject.ui.navigation.NavigationItem
 import com.example.catsapisampleproject.ui.screens.subscreens.BreedListSubScreen
+import com.example.catsapisampleproject.ui.screens.subscreens.CatImagesListPaginatedSubScreen
 import com.example.catsapisampleproject.ui.screens.subscreens.FavouriteBreedListSubScreen
 
 @Composable
@@ -69,6 +70,16 @@ fun MainScreenContent(
                 viewModel = hiltViewModel(),
                 onClickedCard = { breedId ->
                     navController.navigate(NavigationItem.Details.createRoute(breedId))
+                }
+            )
+        }
+
+        composable(BottomNavScreen.IMAGES.name) {
+            CatImagesListPaginatedSubScreen(
+                onClickedCard = { breedId ->
+                    if (breedId.isNotBlank()) {
+                        navController.navigate(NavigationItem.Details.createRoute(breedId))
+                    }
                 }
             )
         }

@@ -1,5 +1,7 @@
 package com.example.catsapisampleproject.dataLayer.repositories
 
+import androidx.paging.PagingData
+import com.example.catsapisampleproject.dataLayer.dto.responses.ImageSearchDTO
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedDetailsEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedImageEntity
@@ -17,4 +19,6 @@ interface CatBreedsRepository {
 
     fun getCatBreedDetailsById(breedId: String): Flow<Triple<CatBreedEntity, CatBreedImageEntity?, CatBreedDetailsEntity?>>
     fun observeFavouriteByImageId(imageId: String): Flow<FavouriteEntity?>
+    fun observeCatImagesPaginated(): Flow<PagingData<ImageSearchDTO>>
+    fun observeFavouriteCatBreeds(): Flow<List<FavouriteEntity>>
 }
