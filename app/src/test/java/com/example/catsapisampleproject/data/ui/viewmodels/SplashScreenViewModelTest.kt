@@ -4,8 +4,6 @@ import android.content.Context
 import app.cash.turbine.test
 import com.example.catsapisampleproject.domain.model.AppInitResult
 import com.example.catsapisampleproject.domain.useCases.InitializeApplicationDataUseCase
-import com.example.catsapisampleproject.presentation.components.viewmodels.SplashScreenUIState
-import com.example.catsapisampleproject.presentation.components.viewmodels.SplashScreenViewModel
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
 import io.mockk.clearMocks

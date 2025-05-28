@@ -10,7 +10,7 @@ import com.example.catsapisampleproject.domain.model.FavouriteStatus
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
 import com.example.catsapisampleproject.domain.useCases.GetCatBreedWithDetailsUseCase
 import com.example.catsapisampleproject.domain.useCases.SetCatFavouriteUseCase
-import com.example.catsapisampleproject.presentation.components.viewmodels.CatViewDetailsViewModel
+import com.example.catsapisampleproject.presentation.viewmodels.CatViewDetailsViewModel
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
 import com.example.catsapisampleproject.util.StringUtils

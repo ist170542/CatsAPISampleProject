@@ -5,7 +5,7 @@ import com.example.catsapisampleproject.domain.model.BreedWithImage
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
 import com.example.catsapisampleproject.domain.useCases.GetCatBreedsUseCase
 import com.example.catsapisampleproject.domain.useCases.SetCatFavouriteUseCase
-import com.example.catsapisampleproject.presentation.components.viewmodels.BreedListViewModel
+import com.example.catsapisampleproject.presentation.viewmodels.BreedListViewModel
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
 import io.mockk.coEvery
