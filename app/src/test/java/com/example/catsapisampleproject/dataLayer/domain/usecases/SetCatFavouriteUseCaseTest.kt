@@ -39,7 +39,7 @@ class SetCatFavouriteUseCaseTest {
 
         // Only Success — use case handles the loading
         coEvery { repository.setCatBreedAsFavourite(imageId) } returns flowOf(
-            Resource.Success(entity)
+            Resource.Success(true)
         )
 
         useCase(imageId).test {
@@ -50,9 +50,7 @@ class SetCatFavouriteUseCaseTest {
             assertTrue(result is Resource.Success)
 
             val fav = (result as Resource.Success).data
-            assertEquals(imageId, fav.imageId)
-            assertEquals("fav1", fav.favouriteId)
-            assertEquals(FavouriteStatus.Synced, fav.status)
+            assertTrue(fav)
 
             cancelAndIgnoreRemainingEvents()
         }
@@ -73,9 +71,7 @@ class SetCatFavouriteUseCaseTest {
             assertTrue("Expected Resource.Success", result is Resource.Success)
 
             val fav = (result as Resource.Success).data
-            assertEquals(imageId, fav.imageId)
-            assertEquals(null, fav.favouriteId)
-            assertEquals(FavouriteStatus.PendingAdd, fav.status)
+            assertTrue(fav)
 
             expectNoEvents()
             cancelAndIgnoreRemainingEvents()

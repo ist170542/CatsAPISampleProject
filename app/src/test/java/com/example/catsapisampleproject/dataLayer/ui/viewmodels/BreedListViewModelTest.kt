@@ -79,9 +79,7 @@ class BreedListViewModelTest {
         coEvery { getCatBreedsUseCase.invoke() } returns flowOf(Resource.Success(emptyList()))
         coEvery { setCatFavouriteUseCase.invoke(any()) } returns flowOf(
             Resource.Loading,
-            Resource.Success(
-                Favourite(imageId = "img123", favouriteId = "fav1")
-            )
+            Resource.Success(true)
         )
 
         val viewModel = BreedListViewModel(

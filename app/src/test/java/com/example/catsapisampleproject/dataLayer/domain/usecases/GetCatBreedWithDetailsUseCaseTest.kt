@@ -6,6 +6,10 @@ import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedImageEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.PendingOperation
+import com.example.catsapisampleproject.domain.model.BreedWithImageAndDetails
+import com.example.catsapisampleproject.domain.model.CatBreed
+import com.example.catsapisampleproject.domain.model.CatBreedDetails
+import com.example.catsapisampleproject.domain.model.CatBreedImage
 import com.example.catsapisampleproject.domain.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
@@ -31,13 +35,14 @@ class GetCatBreedWithDetailsUseCaseTest {
 
     @Test
     fun `returns success with favourite when imageId is not null`() = runTest {
-        val breed = CatBreedEntity("1", "Abyssinian", "img123", 10, 15)
-        val image = CatBreedImageEntity("img123", "1", "http://example.com/cat.jpg")
-        val details = CatBreedDetailsEntity("1", "Friendly", "Asia", origin = "Asia")
+        val breed = CatBreed("1", "Abyssinian", "img123", 10, 15)
+        val image = CatBreedImage("img123", "1", "http://example.com/cat.jpg")
+        val details = CatBreedDetails("1", "Friendly", "Asia", origin = "Asia")
 
         val favourite = FavouriteEntity("img123", "fav1", PendingOperation.None)
 
-        coEvery { repository.getCatBreedDetailsById("1") } returns flowOf(Triple(breed, image, details))
+        coEvery { repository.getCatBreedDetailsByIdWithFavourite("1") } returns flowOf(
+            BreedWithImageAndDetails(breed, image, details))
         every { repository.observeFavouriteByImageId("img123") } returns flowOf(favourite)
 
         useCase("1").test {
@@ -51,10 +56,10 @@ class GetCatBreedWithDetailsUseCaseTest {
 
     @Test
     fun `returns success without favourite when imageId is null`() = runTest {
-        val breed = CatBreedEntity("1", "Abyssinian", null, 10, 15)
-        val details = CatBreedDetailsEntity("1", "Friendly", "Asia", origin = "Asia")
+        val breed = CatBreed("1", "Abyssinian", null, 10, 15)
+        val details = CatBreedDetails("1", "Friendly", "Asia", origin = "Asia")
 
-        coEvery { repository.getCatBreedDetailsById("1") } returns flowOf(Triple(breed, null, details))
+        coEvery { repository.getCatBreedDetailsByIdWithFavourite("1") } returns flowOf(BreedWithImageAndDetails(breed, null, details))
 
         useCase("1").test {
             assertTrue(awaitItem() is Resource.Loading)
@@ -67,7 +72,7 @@ class GetCatBreedWithDetailsUseCaseTest {
 
     @Test
     fun `returns error on exception`() = runTest {
-        coEvery { repository.getCatBreedDetailsById("1") } throws RuntimeException("DB failure")
+        coEvery { repository.getCatBreedDetailsByIdWithFavourite("1") } throws RuntimeException("DB failure")
 
         useCase("1").test {
             assertTrue(awaitItem() is Resource.Loading)

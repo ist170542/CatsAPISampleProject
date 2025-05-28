@@ -4,6 +4,11 @@ import app.cash.turbine.test
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedImageEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
+import com.example.catsapisampleproject.domain.model.BreedWithImage
+import com.example.catsapisampleproject.domain.model.BreedWithImageListMapper
+import com.example.catsapisampleproject.domain.model.CatBreed
+import com.example.catsapisampleproject.domain.model.CatBreedImage
+import com.example.catsapisampleproject.domain.model.Favourite
 import com.example.catsapisampleproject.domain.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
@@ -31,9 +36,9 @@ class GetCatBreedsUseCaseTest {
         CatBreedImageEntity("img1", "1", "https://example.com/image.jpg")
     )
 
-    private val fakeFavourites = MutableStateFlow(
+    private val fakeFavourites =
         listOf(FavouriteEntity("img1", "fav1"))
-    )
+
 
     @Before
     fun setup() {
@@ -45,7 +50,11 @@ class GetCatBreedsUseCaseTest {
     fun `emits loading and then success with mapped list`() = runTest {
         // Arrange
         coEvery { repository.observeCatBreeds() } returns flowOf(
-            Triple(fakeBreeds, fakeImages, fakeFavourites)
+            BreedWithImageListMapper.createBreedWithImageList(
+                fakeBreeds,
+                fakeImages,
+                fakeFavourites
+            )
         )
 
         // Act & Assert

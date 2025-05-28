@@ -189,7 +189,7 @@ class CatViewDetailsViewModelTest {
         every { mockGetCatBreedDetailsUseCase.invoke("123") } returns detailsFlow
 
         val dummyFavourite = Favourite("img123", "fav123", FavouriteStatus.Synced)
-        every { mockSetCatFavouriteUseCase.invoke("img123") } returns flowOf(Resource.Success(dummyFavourite))
+        every { mockSetCatFavouriteUseCase.invoke("img123") } returns flowOf(Resource.Success(true))
 
         val viewModel = CatViewDetailsViewModel(
             savedStateHandle,
