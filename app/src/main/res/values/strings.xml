@@ -36,4 +36,10 @@
     <string name="retry">Retry</string>
     <string name="using_offline_Data">Using offline data</string>
 
+    <!-- Exit Alert Dialog -->
+    <string name="exit_app_dialog_title">Exit App</string>
+    <string name="exit_app_dialog_message">Are you sure you want to exit?</string>
+    <string name="exit_app_dialog_confirm">Yes</string>
+    <string name="exit_app_dialog_cancel">Cancel</string>
+
 </resources>
