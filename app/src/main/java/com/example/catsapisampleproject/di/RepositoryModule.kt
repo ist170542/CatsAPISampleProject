@@ -3,7 +3,7 @@ package com.example.catsapisampleproject.di
 import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
 import com.example.catsapisampleproject.dataLayer.network.NetworkManager
 import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSource
-import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
+import com.example.catsapisampleproject.domain.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepositoryImpl
 import dagger.Module
 import dagger.Provides

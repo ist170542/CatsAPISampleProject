@@ -1,7 +1,7 @@
 package com.example.catsapisampleproject.dataLayer.domain.usecases
 
 import app.cash.turbine.test
-import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
+import com.example.catsapisampleproject.domain.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource

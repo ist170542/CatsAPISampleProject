@@ -3,17 +3,23 @@ package com.example.catsapisampleproject.dataLayer.repositories
 import com.example.catsapisampleproject.dataLayer.dto.responses.BreedDTO
 import com.example.catsapisampleproject.dataLayer.dto.responses.FavouriteDTO
 import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
-import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedDetailsEntity
-import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedImageEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.PendingOperation
+import com.example.catsapisampleproject.dataLayer.local.entities.isEffectiveFavourite
 import com.example.catsapisampleproject.dataLayer.mappers.CatBreedDetailsEntityMapper
 import com.example.catsapisampleproject.dataLayer.mappers.CatBreedEntityMapper
 import com.example.catsapisampleproject.dataLayer.mappers.FavouriteEntityMapper
 import com.example.catsapisampleproject.dataLayer.network.NetworkManager
 import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSource
+import com.example.catsapisampleproject.domain.mappers.CatBreedDetailsMapper
+import com.example.catsapisampleproject.domain.mappers.CatBreedImageMapper
+import com.example.catsapisampleproject.domain.mappers.CatBreedMapper
+import com.example.catsapisampleproject.domain.model.BreedWithImage
+import com.example.catsapisampleproject.domain.model.BreedWithImageAndDetails
 import com.example.catsapisampleproject.domain.model.BreedWithImageListMapper
+import com.example.catsapisampleproject.domain.model.InitializationResult
+import com.example.catsapisampleproject.domain.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +29,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -188,19 +195,12 @@ constructor(
 
     }
 
-    sealed class InitializationResult {
-        data object Loading : InitializationResult()
-        data object Success : InitializationResult()
-        data object OfflineDataAvailable : InitializationResult()
-        data class Error(val message: String) : InitializationResult()
-    }
-
     /**
      *  Fetches data from the local storage and emits updates for the "subscribing" components to act
      * accordingly
      */
     override fun observeCatBreeds():
-            Flow<Triple<List<CatBreedEntity>, List<CatBreedImageEntity>?, Flow<List<FavouriteEntity>>>> =
+            Flow<List<BreedWithImage>> =
         flow {
 
             try {
@@ -211,14 +211,24 @@ constructor(
 
                 val favouriteFlow = localDataSource.observeFavouriteCatBreeds()
 
-                emit(Triple(breeds, images, favouriteFlow))
+                favouriteFlow.map { favourite ->
+
+                    BreedWithImageListMapper.createBreedWithImageList(
+                        breeds,
+                        images,
+                        favourite
+                    )
+
+                }.collect{
+                    emit(it)
+                }
 
             } catch (e: Exception) {
                 throw e
             }
         }
 
-    override fun setCatBreedAsFavourite(imageReferenceId: String): Flow<Resource<FavouriteEntity>> =
+    override fun setCatBreedAsFavourite(imageReferenceId: String): Flow<Resource<Boolean>> =
         flow {
 
             if (!networkManager.isConnected()) {
@@ -260,7 +270,7 @@ constructor(
                 }
 
                 localDataSource.insertFavourite(resolved)
-                emit(Resource.Success(resolved))
+                emit(Resource.Success(true))
 
             } catch (e: Exception) {
                 //Log.d(TAG, "setCatBreedAsFavourite - Failed to favourite. Insertion queued")
@@ -336,8 +346,8 @@ constructor(
      *  Fetches data from the local storage and emits updates for the "subscribing" components to act
      * accordingly
      */
-    override fun getCatBreedDetailsById(breedId: String)
-            : Flow<Triple<CatBreedEntity, CatBreedImageEntity?, CatBreedDetailsEntity?>> = flow {
+    override fun getCatBreedDetailsByIdWithFavourite(breedId: String)
+            : Flow<BreedWithImageAndDetails> = flow {
 
         val breed = withContext(Dispatchers.IO) { localDataSource.getCatBreedById(breedId) }
         if (breed == null) {
@@ -352,7 +362,33 @@ constructor(
             localDataSource.getCatBreedDetails(breedId)
         }
 
-        emit(Triple(breed, image, details))
+        val imageId = breed.referenceImageId
+
+        if (imageId == null) {
+            //this is due to the fact that a favourite being always associated by the imageId
+            emit(
+                BreedWithImageAndDetails(
+                    breed = CatBreedMapper.fromEntity(breed),
+                    image = null,
+                    details = details?.let { CatBreedDetailsMapper.fromEntity(it) },
+                    isFavourite = false
+                )
+            )
+            return@flow
+        }
+
+        localDataSource.observeFavouriteByImageId(imageId).map { favourite ->
+            val isFavourite = favourite?.isEffectiveFavourite() == true
+                BreedWithImageAndDetails(
+                    breed = CatBreedMapper.fromEntity(breed),
+                    image = image?.let { CatBreedImageMapper.fromEntity(it) },
+                    details = details?.let { CatBreedDetailsMapper.fromEntity(it) },
+                    isFavourite = isFavourite
+                )
+
+        }.collect { result ->
+            emit(result)
+        }
     }
 
     override fun observeFavouriteByImageId(imageId: String): Flow<FavouriteEntity?> {

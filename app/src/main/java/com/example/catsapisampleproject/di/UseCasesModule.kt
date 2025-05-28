@@ -1,6 +1,6 @@
 package com.example.catsapisampleproject.di
 
-import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
+import com.example.catsapisampleproject.domain.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.domain.useCases.CatBreedsUseCases
 import com.example.catsapisampleproject.domain.useCases.DeleteCatFavouriteUseCase
 import com.example.catsapisampleproject.domain.useCases.GetCatBreedWithDetailsUseCase

@@ -8,6 +8,7 @@ import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
 import com.example.catsapisampleproject.dataLayer.local.entities.*
 import com.example.catsapisampleproject.dataLayer.network.NetworkManager
 import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSource
+import com.example.catsapisampleproject.domain.model.InitializationResult
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
@@ -61,7 +62,7 @@ class CatBreedsRepositoryImplTest {
 
         repository.fetchAndCacheCatBreeds().test {
             val result = awaitItem()
-            assertThat(result).isEqualTo(CatBreedsRepositoryImpl.InitializationResult.Success)
+            assertThat(result).isEqualTo(InitializationResult.Success)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -75,7 +76,7 @@ class CatBreedsRepositoryImplTest {
 
         repository.fetchAndCacheCatBreeds().test {
             val result = awaitItem()
-            assertThat(result).isInstanceOf(CatBreedsRepositoryImpl.InitializationResult.Error::class.java)
+            assertThat(result).isInstanceOf(InitializationResult.Error::class.java)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -94,7 +95,7 @@ class CatBreedsRepositoryImplTest {
 
         repository.fetchAndCacheCatBreeds().test {
             val result = awaitItem()
-            assertThat(result).isEqualTo(CatBreedsRepositoryImpl.InitializationResult.OfflineDataAvailable)
+            assertThat(result).isEqualTo(InitializationResult.OfflineDataAvailable)
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -109,7 +110,7 @@ class CatBreedsRepositoryImplTest {
 
         repository.fetchAndCacheCatBreeds().test {
             val result = awaitItem()
-            assertThat(result).isInstanceOf(CatBreedsRepositoryImpl.InitializationResult.Error::class.java)
+            assertThat(result).isInstanceOf(InitializationResult.Error::class.java)
             cancelAndIgnoreRemainingEvents()
         }
     }

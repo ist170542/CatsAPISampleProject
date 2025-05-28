@@ -1,6 +1,6 @@
 package com.example.catsapisampleproject.domain.useCases
 
-import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
+import com.example.catsapisampleproject.domain.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.domain.mappers.FavouriteMapper
 import com.example.catsapisampleproject.domain.model.Favourite
 import com.example.catsapisampleproject.domain.model.FavouriteStatus
@@ -16,22 +16,16 @@ import javax.inject.Inject
 class SetCatFavouriteUseCase @Inject constructor(
     private val repository: CatBreedsRepository
 ) {
-    operator fun invoke(imageReferenceId: String): Flow<Resource<Favourite>> = flow {
+    operator fun invoke(imageReferenceId: String): Flow<Resource<Boolean>> = flow {
         emit(Resource.Loading)
 
         repository.setCatBreedAsFavourite(imageReferenceId).collect { result ->
             when (result) {
-                is Resource.Success -> emit(Resource.Success(FavouriteMapper.fromEntity(result.data)))
+                is Resource.Success -> emit(result)
                 is Resource.Error -> {
                     if (result.error is ErrorType.OperationQueued) {
                         emit(
-                            Resource.Success(
-                                Favourite(
-                                    imageId = imageReferenceId,
-                                    favouriteId = null,
-                                    status = FavouriteStatus.PendingAdd
-                                )
-                            )
+                            Resource.Success(true)
                         )
                     } else {
                         emit(Resource.Error(result.error))

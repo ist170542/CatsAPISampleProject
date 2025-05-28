@@ -4,8 +4,7 @@ import app.cash.turbine.test
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedImageEntity
 import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
-import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
-import com.example.catsapisampleproject.domain.model.BreedWithImage
+import com.example.catsapisampleproject.domain.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
 import io.mockk.coEvery

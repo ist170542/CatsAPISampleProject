@@ -1,9 +1,10 @@
 package com.example.catsapisampleproject.dataLayer.domain.usecases
 
 import app.cash.turbine.test
-import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
+import com.example.catsapisampleproject.domain.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepositoryImpl
 import com.example.catsapisampleproject.domain.model.AppInitResult
+import com.example.catsapisampleproject.domain.model.InitializationResult
 import com.example.catsapisampleproject.domain.useCases.InitializeApplicationDataUseCase
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
@@ -32,7 +33,7 @@ class InitializeApplicationDataUseCaseTest {
     @Test
     fun `emits loading then success when initialization succeeds`() = runTest {
         coEvery { repository.fetchAndCacheCatBreeds() } returns flowOf(
-            CatBreedsRepositoryImpl.InitializationResult.Success
+            InitializationResult.Success
         )
 
         useCase().test {
@@ -49,7 +50,7 @@ class InitializeApplicationDataUseCaseTest {
     @Test
     fun `emits loading then offline mode when offline data is available`() = runTest {
         coEvery { repository.fetchAndCacheCatBreeds() } returns flowOf(
-            CatBreedsRepositoryImpl.InitializationResult.OfflineDataAvailable
+            InitializationResult.OfflineDataAvailable
         )
 
         useCase().test {
@@ -66,7 +67,7 @@ class InitializeApplicationDataUseCaseTest {
     @Test
     fun `emits loading then failure when initialization returns error`() = runTest {
         coEvery { repository.fetchAndCacheCatBreeds() } returns flowOf(
-            CatBreedsRepositoryImpl.InitializationResult.Error("Failed to load data")
+            InitializationResult.Error("Failed to load data")
         )
 
         useCase().test {

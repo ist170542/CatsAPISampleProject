@@ -1,8 +1,8 @@
 package com.example.catsapisampleproject.domain.useCases
 
-import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepository
-import com.example.catsapisampleproject.dataLayer.repositories.CatBreedsRepositoryImpl
+import com.example.catsapisampleproject.domain.repositories.CatBreedsRepository
 import com.example.catsapisampleproject.domain.model.AppInitResult
+import com.example.catsapisampleproject.domain.model.InitializationResult
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -21,19 +21,19 @@ class InitializeApplicationDataUseCase @Inject constructor(
 
         catBreedsRepository.fetchAndCacheCatBreeds().collect { result ->
             val mapped = when (result) {
-                is CatBreedsRepositoryImpl.InitializationResult.Success -> {
+                is InitializationResult.Success -> {
                     AppInitResult.Success
                 }
 
-                is CatBreedsRepositoryImpl.InitializationResult.Error -> {
+                is InitializationResult.Error -> {
                     AppInitResult.Failure(result.message)
                 }
 
-                CatBreedsRepositoryImpl.InitializationResult.OfflineDataAvailable -> {
+                is InitializationResult.OfflineDataAvailable -> {
                     AppInitResult.OfflineMode
                 }
 
-                CatBreedsRepositoryImpl.InitializationResult.Loading -> return@collect
+                is InitializationResult.Loading -> return@collect
             }
 
             emit(Resource.Success(mapped))
