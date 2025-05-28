@@ -1,6 +1,6 @@
 package com.example.catsapisampleproject.domain.repositories
 
-import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
+import com.example.catsapisampleproject.data.local.entities.FavouriteEntity
 import com.example.catsapisampleproject.domain.model.BreedWithImage
 import com.example.catsapisampleproject.domain.model.BreedWithImageAndDetails
 import com.example.catsapisampleproject.domain.model.InitializationResult

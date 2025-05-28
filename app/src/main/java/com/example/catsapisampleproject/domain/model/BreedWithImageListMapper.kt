@@ -1,11 +1,11 @@
 package com.example.catsapisampleproject.domain.model
 
-import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedEntity
-import com.example.catsapisampleproject.dataLayer.local.entities.CatBreedImageEntity
-import com.example.catsapisampleproject.dataLayer.local.entities.FavouriteEntity
-import com.example.catsapisampleproject.dataLayer.local.entities.isEffectiveFavourite
-import com.example.catsapisampleproject.domain.mappers.CatBreedImageMapper
-import com.example.catsapisampleproject.domain.mappers.CatBreedMapper
+import com.example.catsapisampleproject.data.local.entities.CatBreedEntity
+import com.example.catsapisampleproject.data.local.entities.CatBreedImageEntity
+import com.example.catsapisampleproject.data.local.entities.FavouriteEntity
+import com.example.catsapisampleproject.data.local.entities.isEffectiveFavourite
+import com.example.catsapisampleproject.data.mappers.CatBreedImageMapper
+import com.example.catsapisampleproject.data.mappers.CatBreedMapper
 
 object BreedWithImageListMapper {
 

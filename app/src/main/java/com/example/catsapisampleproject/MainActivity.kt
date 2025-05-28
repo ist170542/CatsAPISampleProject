@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
 import androidx.navigation.compose.rememberNavController
-import com.example.catsapisampleproject.ui.navigation.AppNavHost
-import com.example.catsapisampleproject.ui.theme.CatAPITheme
+import com.example.catsapisampleproject.presentation.navigation.AppNavHost
+import com.example.catsapisampleproject.presentation.theme.CatAPITheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

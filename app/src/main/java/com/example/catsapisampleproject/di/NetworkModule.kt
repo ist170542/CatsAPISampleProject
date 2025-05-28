@@ -1,10 +1,10 @@
 package com.example.catsapisampleproject.di
 
-import com.example.catsapisampleproject.dataLayer.network.ConnectivityManagerNetwork
-import com.example.catsapisampleproject.dataLayer.network.NetworkManager
-import com.example.catsapisampleproject.dataLayer.remote.CatAPIService
-import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSource
-import com.example.catsapisampleproject.dataLayer.remote.RemoteDataSourceImpl
+import com.example.catsapisampleproject.data.network.ConnectivityManagerNetwork
+import com.example.catsapisampleproject.data.network.NetworkManager
+import com.example.catsapisampleproject.data.remote.CatAPIService
+import com.example.catsapisampleproject.data.remote.source.RemoteDataSource
+import com.example.catsapisampleproject.data.remote.source.RemoteDataSourceImpl
 import com.example.catsapisampleproject.util.AppConstants
 import dagger.Binds
 import dagger.Module

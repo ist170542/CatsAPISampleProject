@@ -1,9 +1,6 @@
 package com.example.catsapisampleproject.domain.useCases
 
 import com.example.catsapisampleproject.domain.repositories.CatBreedsRepository
-import com.example.catsapisampleproject.domain.mappers.FavouriteMapper
-import com.example.catsapisampleproject.domain.model.Favourite
-import com.example.catsapisampleproject.domain.model.FavouriteStatus
 import com.example.catsapisampleproject.util.ErrorType
 import com.example.catsapisampleproject.util.Resource
 import kotlinx.coroutines.flow.Flow

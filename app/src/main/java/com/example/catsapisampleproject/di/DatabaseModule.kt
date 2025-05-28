@@ -2,13 +2,13 @@ package com.example.catsapisampleproject.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.catsapisampleproject.dataLayer.local.AppDatabase
-import com.example.catsapisampleproject.dataLayer.local.CatBreedDetailsDao
-import com.example.catsapisampleproject.dataLayer.local.CatBreedImagesDao
-import com.example.catsapisampleproject.dataLayer.local.CatBreedsDao
-import com.example.catsapisampleproject.dataLayer.local.FavouriteBreedsDao
-import com.example.catsapisampleproject.dataLayer.local.LocalDataSource
-import com.example.catsapisampleproject.dataLayer.local.LocalDataSourceImpl
+import com.example.catsapisampleproject.data.local.database.AppDatabase
+import com.example.catsapisampleproject.data.local.database.CatBreedDetailsDao
+import com.example.catsapisampleproject.data.local.database.CatBreedImagesDao
+import com.example.catsapisampleproject.data.local.database.CatBreedsDao
+import com.example.catsapisampleproject.data.local.database.FavouriteBreedsDao
+import com.example.catsapisampleproject.data.local.source.LocalDataSource
+import com.example.catsapisampleproject.data.local.source.LocalDataSourceImpl
 import com.example.catsapisampleproject.util.AppConstants
 import dagger.Module
 import dagger.Provides
