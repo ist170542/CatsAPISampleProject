@@ -28,7 +28,10 @@ fun AppNavHost(
         composable(
             route = NavigationItem.Splash.route
         ) {
-            SplashScreen { navController.navigate(NavigationItem.Main.route) }
+            SplashScreen { navController.navigate(NavigationItem.Main.route) {
+                popUpTo(NavigationItem.Splash.route) { inclusive = true }
+            }
+            }
         }
 
         // Main navigation graph (with bottom navigation)
